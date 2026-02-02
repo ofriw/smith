@@ -137,3 +137,20 @@ dist
 # Vite logs files
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
+
+# GoatDB
+goat.link.json
+deno.json
+
+# Local database
+.smith/
+
+# Build artifacts
+build/
+
+# Local tool configs
+.chunkhound.json
+.chunkhound/
+
+# macOS
+.DS_Store
