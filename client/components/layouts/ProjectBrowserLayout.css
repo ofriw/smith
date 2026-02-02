@@ -1,0 +1,97 @@
+.project-browser-layout {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: var(--space-4);
+  background: var(--surface-bg);
+}
+
+.project-browser-layout__card {
+  width: 100%;
+  max-width: 480px;
+  background: var(--surface-elevated);
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-8);
+  text-align: center;
+}
+
+.project-browser-layout__logo {
+  font-size: var(--text-3xl);
+  font-weight: var(--font-bold);
+  color: var(--text-primary);
+  margin-bottom: var(--space-2);
+}
+
+.project-browser-layout__tagline {
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+  margin-bottom: var(--space-8);
+}
+
+.project-browser-layout__action {
+  margin-bottom: var(--space-6);
+}
+
+.project-browser-layout__open-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-6);
+  font-size: var(--text-base);
+  font-weight: var(--font-semibold);
+  color: var(--text-inverse);
+  background: var(--accent-primary);
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: background-color var(--duration-fast) var(--ease-default);
+}
+
+.project-browser-layout__open-btn:hover {
+  background: var(--accent-primary-hover);
+}
+
+.project-browser-layout__open-btn:active {
+  background: var(--accent-primary-active);
+}
+
+.project-browser-layout__divider {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-6);
+}
+
+.project-browser-layout__divider-line {
+  flex: 1;
+  height: 1px;
+  background: var(--surface-border);
+}
+
+.project-browser-layout__divider-text {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.project-browser-layout__recent {
+  text-align: left;
+}
+
+.project-browser-layout__recent-title {
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+  color: var(--text-secondary);
+  margin-bottom: var(--space-3);
+}
+
+.project-browser-layout__recent-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}

@@ -1,0 +1,32 @@
+.workspace-layout {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  min-height: 100vh;
+  background: var(--surface-bg);
+}
+
+.workspace-layout--sidebar-collapsed {
+  grid-template-columns: 56px 1fr;
+}
+
+.workspace-layout__sidebar {
+  height: 100vh;
+  position: sticky;
+  top: 0;
+}
+
+.workspace-layout__main {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+.workspace-layout__header {
+  flex-shrink: 0;
+}
+
+.workspace-layout__content {
+  flex: 1;
+  overflow: auto;
+}

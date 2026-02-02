@@ -1,0 +1,38 @@
+.progress-dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: var(--radius-full);
+  border: 2px solid currentColor;
+  flex-shrink: 0;
+}
+
+.progress-dot--pending {
+  color: var(--status-pending);
+  background: transparent;
+}
+
+.progress-dot--active {
+  color: var(--status-running);
+  background: var(--status-running);
+  animation: dot-pulse 1.5s var(--ease-default) infinite;
+}
+
+.progress-dot--completed {
+  color: var(--status-success);
+  background: var(--status-success);
+}
+
+.progress-dot--error {
+  color: var(--status-error);
+  background: var(--status-error);
+}
+
+@keyframes dot-pulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 currentColor;
+  }
+  50% {
+    box-shadow: 0 0 0 4px transparent;
+  }
+}

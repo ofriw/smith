@@ -1,0 +1,71 @@
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-1) var(--space-2);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  font-weight: var(--font-medium);
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+  border-radius: var(--radius-sm);
+  white-space: nowrap;
+}
+
+.status-badge--sm {
+  padding: 2px var(--space-1);
+  font-size: 0.625rem;
+}
+
+/* Status variants */
+.status-badge--available {
+  color: var(--status-success);
+  background: var(--status-success-muted);
+}
+
+.status-badge--running {
+  color: var(--status-running);
+  background: var(--status-running-muted);
+}
+
+.status-badge--done {
+  color: var(--status-success);
+  background: var(--status-success-muted);
+}
+
+.status-badge--error {
+  color: var(--status-error);
+  background: var(--status-error-muted);
+}
+
+.status-badge--pending {
+  color: var(--status-pending);
+  background: var(--status-pending-muted);
+}
+
+.status-badge--unavailable {
+  color: var(--text-muted);
+  background: var(--status-pending-muted);
+  text-decoration: line-through;
+}
+
+/* Pulse animation for running status */
+.status-badge--running::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: var(--radius-full);
+  background: currentColor;
+  animation: pulse 1.5s var(--ease-default) infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.5;
+    transform: scale(0.8);
+  }
+}

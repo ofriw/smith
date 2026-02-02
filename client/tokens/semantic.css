@@ -1,0 +1,88 @@
+/* =============================================================================
+   SMITH Design Tokens - Semantic
+   Theme-aware tokens that reference primitives. Use these in components.
+   ============================================================================= */
+
+/* -----------------------------------------------------------------------------
+   Dark Theme (Default)
+   ----------------------------------------------------------------------------- */
+:root {
+  /* Surface tokens */
+  --surface-bg: var(--gray-950);
+  --surface-elevated: var(--gray-900);
+  --surface-overlay: var(--gray-850);
+  --surface-border: var(--gray-800);
+  --surface-border-subtle: var(--gray-850);
+
+  /* Text tokens */
+  --text-primary: var(--gray-50);
+  --text-secondary: var(--gray-300);
+  --text-muted: var(--gray-500);
+  --text-inverse: var(--gray-950);
+
+  /* Status tokens */
+  --status-success: var(--green-500);
+  --status-success-muted: var(--green-900);
+  --status-error: var(--red-500);
+  --status-error-muted: var(--red-900);
+  --status-warning: var(--amber-500);
+  --status-warning-muted: var(--amber-900);
+  --status-running: var(--blue-500);
+  --status-running-muted: var(--blue-900);
+  --status-pending: var(--gray-500);
+  --status-pending-muted: var(--gray-800);
+
+  /* Interactive tokens */
+  --interactive-bg: var(--gray-800);
+  --interactive-hover: var(--gray-700);
+  --interactive-active: var(--gray-600);
+  --interactive-focus: var(--blue-500);
+  --interactive-focus-ring: rgb(59 130 246 / 0.5);
+
+  /* Accent tokens */
+  --accent-primary: var(--blue-500);
+  --accent-primary-hover: var(--blue-400);
+  --accent-primary-active: var(--blue-600);
+}
+
+/* -----------------------------------------------------------------------------
+   Light Theme
+   ----------------------------------------------------------------------------- */
+[data-theme="light"] {
+  /* Surface tokens */
+  --surface-bg: var(--gray-50);
+  --surface-elevated: white;
+  --surface-overlay: var(--gray-100);
+  --surface-border: var(--gray-200);
+  --surface-border-subtle: var(--gray-100);
+
+  /* Text tokens */
+  --text-primary: var(--gray-900);
+  --text-secondary: var(--gray-600);
+  --text-muted: var(--gray-400);
+  --text-inverse: var(--gray-50);
+
+  /* Status tokens */
+  --status-success: var(--green-600);
+  --status-success-muted: rgb(22 163 74 / 0.1);
+  --status-error: var(--red-600);
+  --status-error-muted: rgb(220 38 38 / 0.1);
+  --status-warning: var(--amber-600);
+  --status-warning-muted: rgb(217 119 6 / 0.1);
+  --status-running: var(--blue-600);
+  --status-running-muted: rgb(37 99 235 / 0.1);
+  --status-pending: var(--gray-400);
+  --status-pending-muted: var(--gray-100);
+
+  /* Interactive tokens */
+  --interactive-bg: var(--gray-100);
+  --interactive-hover: var(--gray-200);
+  --interactive-active: var(--gray-300);
+  --interactive-focus: var(--blue-600);
+  --interactive-focus-ring: rgb(37 99 235 / 0.3);
+
+  /* Accent tokens */
+  --accent-primary: var(--blue-600);
+  --accent-primary-hover: var(--blue-500);
+  --accent-primary-active: var(--blue-700);
+}

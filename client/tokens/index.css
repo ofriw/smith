@@ -1,0 +1,7 @@
+/* =============================================================================
+   SMITH Design Tokens
+   Import order matters: primitives first, then semantic tokens that reference them.
+   ============================================================================= */
+
+@import "./primitives.css";
+@import "./semantic.css";
