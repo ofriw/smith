@@ -1,7 +1,5 @@
 import type { CompletionChunk, ToolCall } from "../../common/types/llm.ts";
-import type { TimelineCall } from "../components/organisms/TimelinePanel.tsx";
-import type { Step } from "../components/molecules/StepBreadcrumb.tsx";
-import type { SessionStatus } from "../contexts/SessionContext.tsx";
+import type { SessionStatus, Step, ToolCall as TimelineCall } from "../contexts/SessionContext.tsx";
 import { MockLLMProvider } from "./MockLLMProvider.ts";
 import { MockToolExecutor } from "./MockToolExecutor.ts";
 import type { Scenario, MockTimingConfig, ScenarioStep } from "./types.ts";

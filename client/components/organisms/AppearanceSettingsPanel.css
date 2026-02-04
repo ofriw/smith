@@ -1,0 +1,24 @@
+.appearance-settings-panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.appearance-settings-panel__section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.appearance-settings-panel__label {
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.appearance-settings-panel__swatches {
+  display: flex;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}

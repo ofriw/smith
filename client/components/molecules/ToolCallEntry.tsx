@@ -134,31 +134,33 @@ export function ToolCallEntry({
 
       {hasContent && (
         <div className="tool-call-entry__body">
-          {description && (
-            <p className="tool-call-entry__description">{description}</p>
-          )}
-          {filePaths && filePaths.length > 0 && (
-            <div className="tool-call-entry__files">
-              <span className="tool-call-entry__files-label">Files:</span>
-              {filePaths.map((path, i) => (
-                <span key={i} className="tool-call-entry__file-path">
-                  {path}
-                </span>
-              ))}
-            </div>
-          )}
-          {input && (
-            <div className="tool-call-entry__section">
-              <span className="tool-call-entry__section-label">Input</span>
-              <pre className="tool-call-entry__input">{input}</pre>
-            </div>
-          )}
-          {output && (
-            <div className="tool-call-entry__section">
-              <span className="tool-call-entry__section-label">Output</span>
-              <pre className="tool-call-entry__output">{output}</pre>
-            </div>
-          )}
+          <div className="tool-call-entry__body-inner">
+            {description && (
+              <p className="tool-call-entry__description">{description}</p>
+            )}
+            {filePaths && filePaths.length > 0 && (
+              <div className="tool-call-entry__files">
+                <span className="tool-call-entry__files-label">Files:</span>
+                {filePaths.map((path, i) => (
+                  <span key={i} className="tool-call-entry__file-path">
+                    {path}
+                  </span>
+                ))}
+              </div>
+            )}
+            {input && (
+              <div className="tool-call-entry__section">
+                <span className="tool-call-entry__section-label">Input</span>
+                <pre className="tool-call-entry__input">{input}</pre>
+              </div>
+            )}
+            {output && (
+              <div className="tool-call-entry__section">
+                <span className="tool-call-entry__section-label">Output</span>
+                <pre className="tool-call-entry__output">{output}</pre>
+              </div>
+            )}
+          </div>
         </div>
       )}
     </div>

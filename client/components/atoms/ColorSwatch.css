@@ -1,0 +1,33 @@
+.color-swatch {
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-full);
+  background: var(--swatch-color);
+  border: 2px solid transparent;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform var(--duration-fast) var(--ease-default),
+              border-color var(--duration-fast) var(--ease-default),
+              box-shadow var(--duration-fast) var(--ease-default);
+}
+
+.color-swatch:hover {
+  transform: scale(1.1);
+}
+
+.color-swatch:focus-visible {
+  outline: 2px solid var(--interactive-focus);
+  outline-offset: 2px;
+}
+
+.color-swatch--selected {
+  border-color: var(--text-primary);
+  box-shadow: 0 0 0 2px var(--surface-bg);
+}
+
+.color-swatch__check {
+  color: white;
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.3));
+}

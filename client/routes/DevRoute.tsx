@@ -14,64 +14,27 @@ import {
   RadioGroup,
   LoadingSpinner,
   // Molecules
-  StepBreadcrumb,
   KeyValueRow,
   ToolCallEntry,
   ProjectCard,
   ProviderRow,
   FormField,
-  WorkflowCard,
   SearchInput,
-  StepCompletionCard,
-  StatCard,
   VerificationItem,
-  HistoryEntry,
+  StepSection,
   // Organisms
   Modal,
-  IOPanel,
-  TimelinePanel,
   WelcomeModal,
   InitializeProjectModal,
   SettingsModal,
   ToolRow,
   MCPServerRow,
-  ExecutionModeToggle,
-  WorkflowSelectionModal,
   ConfirmDialog,
-  StreamingOutput,
-  ErrorStateCard,
+  ExecutionControls,
+  SchemaForm,
+  WorkflowSelectionPanel,
 } from "../components/index.ts";
-import type { Step, Tab, TimelineCall, ExecutionMode } from "../components/index.ts";
-
-// Demo data
-const demoSteps: Step[] = [
-  { name: "Input", status: "completed" },
-  { name: "Process", status: "active" },
-  { name: "Output", status: "pending" },
-];
-
-const demoCalls: TimelineCall[] = [
-  {
-    id: "1",
-    toolName: "file_read",
-    status: "done",
-    description: "Reading configuration file",
-    input: '{ "path": "/config.json" }',
-  },
-  {
-    id: "2",
-    toolName: "llm_query",
-    status: "running",
-    description: "Querying language model for analysis",
-  },
-  {
-    id: "3",
-    toolName: "file_write",
-    status: "error",
-    description: "Failed to write output",
-    input: '{ "path": "/output.txt" }',
-  },
-];
+import type { SchemaField } from "../components/organisms/SchemaForm.tsx";
 
 function ThemeToggle() {
   const { theme, setTheme } = useThemeContext();
@@ -117,15 +80,20 @@ export function DevRoute() {
   const [toggleValue, setToggleValue] = useState(false);
   const [radioValue, setRadioValue] = useState("option1");
   const [searchValue, setSearchValue] = useState("");
-  const [executionMode, setExecutionMode] =
-    useState<ExecutionMode>("steps-only");
 
   // Modal states
   const [welcomeModalOpen, setWelcomeModalOpen] = useState(false);
   const [initModalOpen, setInitModalOpen] = useState(false);
   const [settingsModalOpen, setSettingsModalOpen] = useState(false);
-  const [workflowModalOpen, setWorkflowModalOpen] = useState(false);
+  const [showWorkflowPanel, setShowWorkflowPanel] = useState(false);
   const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
+
+  // Schema form state
+  const [schemaValues, setSchemaValues] = useState<Record<string, unknown>>({});
+  const schemaFields: SchemaField[] = [
+    { name: "task", label: "Task", type: "text", required: true },
+    { name: "scope", label: "Scope", type: "string" },
+  ];
 
   return (
     <div
@@ -149,7 +117,7 @@ export function DevRoute() {
             SMITH UI Components
           </h1>
           <Button variant="ghost" size="sm" onClick={() => navigate("/")}>
-            ← Back to App
+            Back to App
           </Button>
         </div>
         <ThemeToggle />
@@ -169,50 +137,23 @@ export function DevRoute() {
 
         <div style={{ display: "grid", gap: "var(--space-4)" }}>
           <div>
-            <h3
-              style={{
-                fontSize: "var(--text-sm)",
-                color: "var(--text-muted)",
-                marginBottom: "var(--space-2)",
-              }}
-            >
+            <h3 style={{ fontSize: "var(--text-sm)", color: "var(--text-muted)", marginBottom: "var(--space-2)" }}>
               Button
             </h3>
-            <div
-              style={{
-                display: "flex",
-                gap: "var(--space-2)",
-                flexWrap: "wrap",
-                alignItems: "center",
-              }}
-            >
+            <div style={{ display: "flex", gap: "var(--space-2)", flexWrap: "wrap", alignItems: "center" }}>
               <Button variant="primary">Primary</Button>
               <Button variant="secondary">Secondary</Button>
               <Button variant="ghost">Ghost</Button>
               <Button variant="danger">Danger</Button>
-              <Button variant="primary" size="sm">
-                Small
-              </Button>
-              <Button variant="primary" size="lg">
-                Large
-              </Button>
-              <Button variant="primary" loading>
-                Loading
-              </Button>
-              <Button variant="primary" disabled>
-                Disabled
-              </Button>
+              <Button variant="primary" size="sm">Small</Button>
+              <Button variant="primary" size="lg">Large</Button>
+              <Button variant="primary" loading>Loading</Button>
+              <Button variant="primary" disabled>Disabled</Button>
             </div>
           </div>
 
           <div>
-            <h3
-              style={{
-                fontSize: "var(--text-sm)",
-                color: "var(--text-muted)",
-                marginBottom: "var(--space-2)",
-              }}
-            >
+            <h3 style={{ fontSize: "var(--text-sm)", color: "var(--text-muted)", marginBottom: "var(--space-2)" }}>
               StatusBadge
             </h3>
             <div style={{ display: "flex", gap: "var(--space-2)", flexWrap: "wrap" }}>
@@ -226,92 +167,36 @@ export function DevRoute() {
           </div>
 
           <div>
-            <h3
-              style={{
-                fontSize: "var(--text-sm)",
-                color: "var(--text-muted)",
-                marginBottom: "var(--space-2)",
-              }}
-            >
+            <h3 style={{ fontSize: "var(--text-sm)", color: "var(--text-muted)", marginBottom: "var(--space-2)" }}>
               IconButton
             </h3>
             <div style={{ display: "flex", gap: "var(--space-2)" }}>
               <IconButton icon="close" label="Close" onClick={() => {}} />
               <IconButton icon="add" label="Add" onClick={() => {}} />
               <IconButton icon="settings" label="Settings" onClick={() => {}} />
-              <IconButton
-                icon="expand"
-                label="Expand"
-                onClick={() => {}}
-                variant="subtle"
-              />
-              <IconButton
-                icon="revert"
-                label="Revert"
-                onClick={() => {}}
-                variant="subtle"
-              />
-              <IconButton
-                icon="rewind"
-                label="Rewind"
-                onClick={() => {}}
-                disabled
-              />
+              <IconButton icon="expand" label="Expand" onClick={() => {}} variant="subtle" />
+              <IconButton icon="revert" label="Revert" onClick={() => {}} variant="subtle" />
+              <IconButton icon="rewind" label="Rewind" onClick={() => {}} disabled />
             </div>
           </div>
 
           <div>
-            <h3
-              style={{
-                fontSize: "var(--text-sm)",
-                color: "var(--text-muted)",
-                marginBottom: "var(--space-2)",
-              }}
-            >
+            <h3 style={{ fontSize: "var(--text-sm)", color: "var(--text-muted)", marginBottom: "var(--space-2)" }}>
               TextInput & TextArea
             </h3>
-            <div
-              style={{ display: "grid", gap: "var(--space-2)", maxWidth: "400px" }}
-            >
-              <TextInput
-                value={textValue}
-                onChange={setTextValue}
-                placeholder="Enter text..."
-              />
-              <TextInput
-                value=""
-                onChange={() => {}}
-                placeholder="With error"
-                error
-              />
-              <TextInput
-                value=""
-                onChange={() => {}}
-                placeholder="Disabled"
-                disabled
-              />
-              <TextArea
-                value={textAreaValue}
-                onChange={setTextAreaValue}
-                placeholder="Enter longer text..."
-                rows={3}
-              />
+            <div style={{ display: "grid", gap: "var(--space-2)", maxWidth: "400px" }}>
+              <TextInput value={textValue} onChange={setTextValue} placeholder="Enter text..." />
+              <TextInput value="" onChange={() => {}} placeholder="With error" error />
+              <TextInput value="" onChange={() => {}} placeholder="Disabled" disabled />
+              <TextArea value={textAreaValue} onChange={setTextAreaValue} placeholder="Enter longer text..." rows={3} />
             </div>
           </div>
 
           <div>
-            <h3
-              style={{
-                fontSize: "var(--text-sm)",
-                color: "var(--text-muted)",
-                marginBottom: "var(--space-2)",
-              }}
-            >
+            <h3 style={{ fontSize: "var(--text-sm)", color: "var(--text-muted)", marginBottom: "var(--space-2)" }}>
               Select
             </h3>
-            <div
-              style={{ display: "flex", gap: "var(--space-2)", flexWrap: "wrap" }}
-            >
+            <div style={{ display: "flex", gap: "var(--space-2)", flexWrap: "wrap" }}>
               <Select
                 value={selectValue}
                 onChange={setSelectValue}
@@ -337,28 +222,11 @@ export function DevRoute() {
           </div>
 
           <div>
-            <h3
-              style={{
-                fontSize: "var(--text-sm)",
-                color: "var(--text-muted)",
-                marginBottom: "var(--space-2)",
-              }}
-            >
+            <h3 style={{ fontSize: "var(--text-sm)", color: "var(--text-muted)", marginBottom: "var(--space-2)" }}>
               Toggle & RadioGroup
             </h3>
-            <div
-              style={{
-                display: "flex",
-                gap: "var(--space-4)",
-                alignItems: "flex-start",
-                flexWrap: "wrap",
-              }}
-            >
-              <Toggle
-                checked={toggleValue}
-                onChange={setToggleValue}
-                label="Enable feature"
-              />
+            <div style={{ display: "flex", gap: "var(--space-4)", alignItems: "flex-start", flexWrap: "wrap" }}>
+              <Toggle checked={toggleValue} onChange={setToggleValue} label="Enable feature" />
               <RadioGroup
                 value={radioValue}
                 onChange={setRadioValue}
@@ -374,18 +242,10 @@ export function DevRoute() {
           </div>
 
           <div>
-            <h3
-              style={{
-                fontSize: "var(--text-sm)",
-                color: "var(--text-muted)",
-                marginBottom: "var(--space-2)",
-              }}
-            >
+            <h3 style={{ fontSize: "var(--text-sm)", color: "var(--text-muted)", marginBottom: "var(--space-2)" }}>
               LoadingSpinner & Chip & ProgressDot
             </h3>
-            <div
-              style={{ display: "flex", gap: "var(--space-2)", alignItems: "center" }}
-            >
+            <div style={{ display: "flex", gap: "var(--space-2)", alignItems: "center" }}>
               <LoadingSpinner size="sm" />
               <LoadingSpinner size="md" />
               <LoadingSpinner size="lg" />
@@ -404,332 +264,96 @@ export function DevRoute() {
 
       {/* Molecules */}
       <section style={{ marginBottom: "var(--space-8)" }}>
-        <h2
-          style={{
-            fontSize: "var(--text-xl)",
-            marginBottom: "var(--space-4)",
-            color: "var(--text-secondary)",
-          }}
-        >
+        <h2 style={{ fontSize: "var(--text-xl)", marginBottom: "var(--space-4)", color: "var(--text-secondary)" }}>
           Molecules
         </h2>
 
         <div style={{ display: "grid", gap: "var(--space-4)" }}>
           <div>
-            <h3
-              style={{
-                fontSize: "var(--text-sm)",
-                color: "var(--text-muted)",
-                marginBottom: "var(--space-2)",
-              }}
-            >
-              StepBreadcrumb
-            </h3>
-            <StepBreadcrumb steps={demoSteps} onRewind={() => {}} />
-          </div>
-
-          <div>
-            <h3
-              style={{
-                fontSize: "var(--text-sm)",
-                color: "var(--text-muted)",
-                marginBottom: "var(--space-2)",
-              }}
-            >
+            <h3 style={{ fontSize: "var(--text-sm)", color: "var(--text-muted)", marginBottom: "var(--space-2)" }}>
               KeyValueRow
             </h3>
-            <div
-              style={{
-                background: "var(--surface-elevated)",
-                padding: "var(--space-3)",
-                borderRadius: "var(--radius-md)",
-              }}
-            >
+            <div style={{ background: "var(--surface-elevated)", padding: "var(--space-3)", borderRadius: "var(--radius-md)" }}>
               <KeyValueRow label="Model" value="gpt-4-turbo" />
-              <KeyValueRow
-                label="Status"
-                value={<StatusBadge status="running" size="sm" />}
-              />
-              <KeyValueRow
-                label="Long Value"
-                value="This is a very long value that should be truncated when displayed"
-                truncate
-              />
+              <KeyValueRow label="Status" value={<StatusBadge status="running" size="sm" />} />
+              <KeyValueRow label="Long Value" value="This is a very long value that should be truncated when displayed" truncate />
             </div>
           </div>
 
           <div>
-            <h3
-              style={{
-                fontSize: "var(--text-sm)",
-                color: "var(--text-muted)",
-                marginBottom: "var(--space-2)",
-              }}
-            >
+            <h3 style={{ fontSize: "var(--text-sm)", color: "var(--text-muted)", marginBottom: "var(--space-2)" }}>
               ToolCallEntry
             </h3>
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                gap: "var(--space-2)",
-              }}
-            >
-              <ToolCallEntry
-                toolName="file_read"
-                status="done"
-                description="Reading the configuration file"
-                input='{ "path": "/config.json" }'
-                onRevert={() => {}}
-              />
-              <ToolCallEntry
-                toolName="llm_query"
-                status="running"
-                description="Querying the language model"
-              />
-              <ToolCallEntry
-                toolName="file_write"
-                status="error"
-                description="Failed to write output"
-                reverted
-              />
+            <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-2)" }}>
+              <ToolCallEntry toolName="file_read" status="done" description="Reading the configuration file" input='{ "path": "/config.json" }' onRevert={() => {}} />
+              <ToolCallEntry toolName="llm_query" status="running" description="Querying the language model" />
+              <ToolCallEntry toolName="file_write" status="error" description="Failed to write output" reverted />
             </div>
           </div>
 
           <div>
-            <h3
-              style={{
-                fontSize: "var(--text-sm)",
-                color: "var(--text-muted)",
-                marginBottom: "var(--space-2)",
-              }}
-            >
+            <h3 style={{ fontSize: "var(--text-sm)", color: "var(--text-muted)", marginBottom: "var(--space-2)" }}>
+              StepSection
+            </h3>
+            <div style={{ maxWidth: "600px" }}>
+              <StepSection title="Input" defaultExpanded={false}>
+                <pre>{"{ \"query\": \"example\" }"}</pre>
+              </StepSection>
+              <StepSection title="Tool Calls" count={3} defaultExpanded={true}>
+                <p>Tool call content here</p>
+              </StepSection>
+              <StepSection title="Output" defaultExpanded={true}>
+                <pre>{"{ \"result\": \"success\" }"}</pre>
+              </StepSection>
+            </div>
+          </div>
+
+          <div>
+            <h3 style={{ fontSize: "var(--text-sm)", color: "var(--text-muted)", marginBottom: "var(--space-2)" }}>
               ProjectCard
             </h3>
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))",
-                gap: "var(--space-2)",
-              }}
-            >
-              <ProjectCard
-                name="smith"
-                path="/Users/ofri/Documents/GitHub/smith"
-                branch="main"
-                onClick={() => {}}
-                active
-              />
-              <ProjectCard
-                name="another-project"
-                path="/Users/ofri/projects/another-project"
-                branch="feature/new-feature"
-                onClick={() => {}}
-              />
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))", gap: "var(--space-2)" }}>
+              <ProjectCard name="smith" path="/Users/ofri/Documents/GitHub/smith" branch="main" onClick={() => {}} active />
+              <ProjectCard name="another-project" path="/Users/ofri/projects/another-project" branch="feature/new-feature" onClick={() => {}} />
             </div>
           </div>
 
           <div>
-            <h3
-              style={{
-                fontSize: "var(--text-sm)",
-                color: "var(--text-muted)",
-                marginBottom: "var(--space-2)",
-              }}
-            >
+            <h3 style={{ fontSize: "var(--text-sm)", color: "var(--text-muted)", marginBottom: "var(--space-2)" }}>
               ProviderRow
             </h3>
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                gap: "var(--space-2)",
-              }}
-            >
-              <ProviderRow
-                name="OpenAI"
-                adapter="openai-compatible"
-                status="available"
-                models={["gpt-4", "gpt-4-turbo", "gpt-3.5-turbo"]}
-                builtin
-              />
-              <ProviderRow
-                name="Anthropic"
-                adapter="anthropic"
-                status="unavailable"
-                models={["claude-3-opus", "claude-3-sonnet"]}
-                hint="Missing API key"
-              />
+            <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-2)" }}>
+              <ProviderRow name="OpenAI" adapter="openai-compatible" status="available" models={["gpt-4", "gpt-4-turbo", "gpt-3.5-turbo"]} builtin />
+              <ProviderRow name="Anthropic" adapter="anthropic" status="unavailable" models={["claude-3-opus", "claude-3-sonnet"]} hint="Missing API key" />
             </div>
           </div>
 
           <div>
-            <h3
-              style={{
-                fontSize: "var(--text-sm)",
-                color: "var(--text-muted)",
-                marginBottom: "var(--space-2)",
-              }}
-            >
-              FormField
+            <h3 style={{ fontSize: "var(--text-sm)", color: "var(--text-muted)", marginBottom: "var(--space-2)" }}>
+              FormField & SearchInput
             </h3>
-            <div
-              style={{
-                maxWidth: "400px",
-                display: "grid",
-                gap: "var(--space-3)",
-              }}
-            >
+            <div style={{ maxWidth: "400px", display: "grid", gap: "var(--space-3)" }}>
               <FormField label="Username" required>
-                <TextInput
-                  value={textValue}
-                  onChange={setTextValue}
-                  placeholder="Enter username"
-                />
+                <TextInput value={textValue} onChange={setTextValue} placeholder="Enter username" />
               </FormField>
               <FormField label="Description" hint="Optional field">
-                <TextArea
-                  value={textAreaValue}
-                  onChange={setTextAreaValue}
-                  placeholder="Enter description"
-                  rows={2}
-                />
+                <TextArea value={textAreaValue} onChange={setTextAreaValue} placeholder="Enter description" rows={2} />
               </FormField>
               <FormField label="Email" error="Invalid email format" required>
-                <TextInput
-                  value=""
-                  onChange={() => {}}
-                  placeholder="Enter email"
-                  error
-                />
+                <TextInput value="" onChange={() => {}} placeholder="Enter email" error />
               </FormField>
+              <SearchInput value={searchValue} onChange={setSearchValue} placeholder="Search workflows..." />
             </div>
           </div>
 
           <div>
-            <h3
-              style={{
-                fontSize: "var(--text-sm)",
-                color: "var(--text-muted)",
-                marginBottom: "var(--space-2)",
-              }}
-            >
-              WorkflowCard & SearchInput
+            <h3 style={{ fontSize: "var(--text-sm)", color: "var(--text-muted)", marginBottom: "var(--space-2)" }}>
+              VerificationItem
             </h3>
-            <div style={{ maxWidth: "600px" }}>
-              <div style={{ marginBottom: "var(--space-3)" }}>
-                <SearchInput
-                  value={searchValue}
-                  onChange={setSearchValue}
-                  placeholder="Search workflows..."
-                />
-              </div>
-              <div
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: "repeat(2, 1fr)",
-                  gap: "var(--space-2)",
-                }}
-              >
-                <WorkflowCard
-                  name="Plan & Execute"
-                  description="Research the problem, create a plan, then execute"
-                  steps={["Research", "Plan", "Execute"]}
-                  onClick={() => {}}
-                />
-                <WorkflowCard
-                  name="Quick Fix"
-                  description="Fast bug fixing workflow"
-                  steps={["Analyze", "Fix"]}
-                  onClick={() => {}}
-                />
-              </div>
-            </div>
-          </div>
-
-          <div>
-            <h3
-              style={{
-                fontSize: "var(--text-sm)",
-                color: "var(--text-muted)",
-                marginBottom: "var(--space-2)",
-              }}
-            >
-              StepCompletionCard
-            </h3>
-            <div style={{ maxWidth: "600px" }}>
-              <StepCompletionCard
-                stepName="Research"
-                status="done"
-                inputSummary="query, targetFiles"
-                outputSummary="findings (1.2k)"
-                inputData={{ query: "auth module", targetFiles: ["src/auth/**"] }}
-                outputData={{ findings: "Found 12 relevant files..." }}
-                onView={() => {}}
-                onEditFork={() => {}}
-                onRewind={() => {}}
-              />
-            </div>
-          </div>
-
-          <div>
-            <h3
-              style={{
-                fontSize: "var(--text-sm)",
-                color: "var(--text-muted)",
-                marginBottom: "var(--space-2)",
-              }}
-            >
-              StatCard & VerificationItem
-            </h3>
-            <div
-              style={{ display: "flex", gap: "var(--space-3)", flexWrap: "wrap" }}
-            >
-              <StatCard label="Duration" value="4m 32s" />
-              <StatCard label="Tokens" value="12,453" trend="up" />
-              <StatCard label="Files" value="8" />
-            </div>
-            <div
-              style={{
-                marginTop: "var(--space-3)",
-                maxWidth: "400px",
-                display: "grid",
-                gap: "var(--space-2)",
-              }}
-            >
+            <div style={{ maxWidth: "400px", display: "grid", gap: "var(--space-2)" }}>
               <VerificationItem label="TypeScript" status="pass" />
               <VerificationItem label="ESLint" status="pass" />
-              <VerificationItem
-                label="Tests"
-                status="fail"
-                details="1 test failed: AuthService.test.ts"
-              />
-            </div>
-          </div>
-
-          <div>
-            <h3
-              style={{
-                fontSize: "var(--text-sm)",
-                color: "var(--text-muted)",
-                marginBottom: "var(--space-2)",
-              }}
-            >
-              HistoryEntry
-            </h3>
-            <div style={{ maxWidth: "600px" }}>
-              <HistoryEntry
-                id="1"
-                timestamp="2024-01-15 14:30"
-                workflowName="Plan & Execute"
-                status="done"
-                duration="4m 32s"
-                filesModified={8}
-                toolCalls={24}
-                onReplay={() => {}}
-                onViewEdits={() => {}}
-                onView={() => {}}
-              />
+              <VerificationItem label="Tests" status="fail" details="1 test failed: AuthService.test.ts" />
             </div>
           </div>
         </div>
@@ -737,73 +361,49 @@ export function DevRoute() {
 
       {/* Organisms */}
       <section style={{ marginBottom: "var(--space-8)" }}>
-        <h2
-          style={{
-            fontSize: "var(--text-xl)",
-            marginBottom: "var(--space-4)",
-            color: "var(--text-secondary)",
-          }}
-        >
+        <h2 style={{ fontSize: "var(--text-xl)", marginBottom: "var(--space-4)", color: "var(--text-secondary)" }}>
           Organisms
         </h2>
 
         <div style={{ display: "grid", gap: "var(--space-4)" }}>
           <div>
-            <h3
-              style={{
-                fontSize: "var(--text-sm)",
-                color: "var(--text-muted)",
-                marginBottom: "var(--space-2)",
-              }}
-            >
-              IOPanel
+            <h3 style={{ fontSize: "var(--text-sm)", color: "var(--text-muted)", marginBottom: "var(--space-2)" }}>
+              SchemaForm
             </h3>
-            <IOPanel
-              title="Input Data"
-              data={{
-                model: "gpt-4",
-                temperature: 0.7,
-                messages: ["Hello", "World"],
-                config: { stream: true },
-              }}
-              editable
-              onChange={() => {}}
-            />
-          </div>
-
-          <div>
-            <h3
-              style={{
-                fontSize: "var(--text-sm)",
-                color: "var(--text-muted)",
-                marginBottom: "var(--space-2)",
-              }}
-            >
-              TimelinePanel
-            </h3>
-            <div style={{ height: "300px" }}>
-              <TimelinePanel calls={demoCalls} onRevert={() => {}} />
+            <div style={{ maxWidth: "400px" }}>
+              <SchemaForm
+                schema={schemaFields}
+                values={schemaValues}
+                onChange={(name, value) => setSchemaValues((prev) => ({ ...prev, [name]: value }))}
+              />
             </div>
           </div>
 
           <div>
-            <h3
-              style={{
-                fontSize: "var(--text-sm)",
-                color: "var(--text-muted)",
-                marginBottom: "var(--space-2)",
-              }}
-            >
+            <h3 style={{ fontSize: "var(--text-sm)", color: "var(--text-muted)", marginBottom: "var(--space-2)" }}>
+              ExecutionControls
+            </h3>
+            <ExecutionControls
+              isRunning={true}
+              isPaused={false}
+              onPause={() => {}}
+              onContinue={() => {}}
+              rewindOptions={[
+                { value: "0", label: "Research" },
+                { value: "1", label: "Plan" },
+              ]}
+              onRewind={() => {}}
+              onEndSession={() => {}}
+            />
+          </div>
+
+          <div>
+            <h3 style={{ fontSize: "var(--text-sm)", color: "var(--text-muted)", marginBottom: "var(--space-2)" }}>
               Modal & ConfirmDialog
             </h3>
             <div style={{ display: "flex", gap: "var(--space-2)" }}>
               <Button onClick={() => setModalOpen(true)}>Open Modal</Button>
-              <Button
-                variant="danger"
-                onClick={() => setConfirmDialogOpen(true)}
-              >
-                Open Confirm
-              </Button>
+              <Button variant="danger" onClick={() => setConfirmDialogOpen(true)}>Open Confirm</Button>
             </div>
             <Modal
               open={modalOpen}
@@ -811,21 +411,12 @@ export function DevRoute() {
               title="Example Modal"
               actions={
                 <>
-                  <Button
-                    variant="secondary"
-                    onClick={() => setModalOpen(false)}
-                  >
-                    Cancel
-                  </Button>
-                  <Button variant="primary" onClick={() => setModalOpen(false)}>
-                    Confirm
-                  </Button>
+                  <Button variant="secondary" onClick={() => setModalOpen(false)}>Cancel</Button>
+                  <Button variant="primary" onClick={() => setModalOpen(false)}>Confirm</Button>
                 </>
               }
             >
-              <p>
-                This is a modal dialog with focus trap and escape key handling.
-              </p>
+              <p>This is a modal dialog with focus trap and escape key handling.</p>
             </Modal>
             <ConfirmDialog
               open={confirmDialogOpen}
@@ -839,60 +430,22 @@ export function DevRoute() {
           </div>
 
           <div>
-            <h3
-              style={{
-                fontSize: "var(--text-sm)",
-                color: "var(--text-muted)",
-                marginBottom: "var(--space-2)",
-              }}
-            >
+            <h3 style={{ fontSize: "var(--text-sm)", color: "var(--text-muted)", marginBottom: "var(--space-2)" }}>
               Special Modals
             </h3>
-            <div
-              style={{ display: "flex", gap: "var(--space-2)", flexWrap: "wrap" }}
-            >
-              <Button
-                variant="secondary"
-                onClick={() => setWelcomeModalOpen(true)}
-              >
-                Welcome Modal
-              </Button>
-              <Button
-                variant="secondary"
-                onClick={() => setInitModalOpen(true)}
-              >
-                Initialize Modal
-              </Button>
-              <Button
-                variant="secondary"
-                onClick={() => setSettingsModalOpen(true)}
-              >
-                Settings Modal
-              </Button>
-              <Button
-                variant="secondary"
-                onClick={() => setWorkflowModalOpen(true)}
-              >
-                Workflow Selection
+            <div style={{ display: "flex", gap: "var(--space-2)", flexWrap: "wrap" }}>
+              <Button variant="secondary" onClick={() => setWelcomeModalOpen(true)}>Welcome Modal</Button>
+              <Button variant="secondary" onClick={() => setInitModalOpen(true)}>Initialize Modal</Button>
+              <Button variant="secondary" onClick={() => setSettingsModalOpen(true)}>Settings Modal</Button>
+              <Button variant="secondary" onClick={() => setShowWorkflowPanel(!showWorkflowPanel)}>
+                {showWorkflowPanel ? "Hide" : "Show"} Workflow Panel
               </Button>
             </div>
             {welcomeModalOpen && (
               <WelcomeModal
                 providers={[
-                  {
-                    name: "OpenAI",
-                    adapter: "openai",
-                    status: "available",
-                    models: ["gpt-4", "gpt-3.5-turbo"],
-                    builtin: true,
-                  },
-                  {
-                    name: "Anthropic",
-                    adapter: "anthropic",
-                    status: "unavailable",
-                    models: [],
-                    hint: "Missing API key",
-                  },
+                  { name: "OpenAI", adapter: "openai", status: "available", models: ["gpt-4", "gpt-3.5-turbo"], builtin: true },
+                  { name: "Anthropic", adapter: "anthropic", status: "unavailable", models: [], hint: "Missing API key" },
                 ]}
                 modelOptions={[
                   { value: "openai:gpt-4", label: "OpenAI: GPT-4" },
@@ -912,22 +465,9 @@ export function DevRoute() {
             <SettingsModal
               open={settingsModalOpen}
               onClose={() => setSettingsModalOpen(false)}
-              providers={[
-                {
-                  name: "OpenAI",
-                  adapter: "openai",
-                  status: "available",
-                  models: ["gpt-4"],
-                  builtin: true,
-                },
-              ]}
+              providers={[{ name: "OpenAI", adapter: "openai", status: "available", models: ["gpt-4"], builtin: true }]}
               tools={[
-                {
-                  name: "file_read",
-                  packageName: "@smith/tools",
-                  enabled: true,
-                  description: "Read file contents",
-                },
+                { name: "file_read", packageName: "@smith/tools", enabled: true, description: "Read file contents" },
                 { name: "file_write", packageName: "@smith/tools", enabled: true },
               ]}
               onToolToggle={() => {}}
@@ -942,132 +482,37 @@ export function DevRoute() {
               globalConfigPath="~/.smith/config.json"
               projectConfigPath=".smith/settings.json"
             />
-            <WorkflowSelectionModal
-              open={workflowModalOpen}
-              onClose={() => setWorkflowModalOpen(false)}
-              projectName="smith"
-              workflowGroups={[
-                {
-                  title: "User Workflows",
-                  workflows: [
+            {showWorkflowPanel && (
+              <div style={{ marginTop: "var(--space-4)", maxWidth: "480px" }}>
+                <WorkflowSelectionPanel
+                  projectName="smith"
+                  workflowGroups={[
                     {
-                      id: "1",
-                      name: "Plan & Execute",
-                      description: "Research, plan, execute",
-                      steps: ["Research", "Plan", "Execute"],
-                      onClick: () => {},
+                      title: "User Workflows",
+                      workflows: [
+                        { id: "1", name: "Plan & Execute", description: "Research, plan, execute", stepCount: 3 },
+                      ],
                     },
-                  ],
-                },
-              ]}
-              selectedWorkflowId="1"
-              onWorkflowSelect={() => {}}
-              inputSchema={[
-                {
-                  name: "task",
-                  label: "Task Description",
-                  type: "text",
-                  required: true,
-                  placeholder: "What do you want to accomplish?",
-                },
-                {
-                  name: "scope",
-                  label: "File Scope",
-                  type: "string",
-                  placeholder: "src/**",
-                },
-              ]}
-              inputValues={{ task: "", scope: "" }}
-              onInputChange={() => {}}
-              executionMode={executionMode}
-              onExecutionModeChange={setExecutionMode}
-              onStartWorkflow={() => setWorkflowModalOpen(false)}
-            />
+                  ]}
+                  selectedWorkflowId="1"
+                  onWorkflowSelect={() => {}}
+                  inputSchema={schemaFields}
+                  inputValues={schemaValues}
+                  onInputChange={(name, value) => setSchemaValues((prev) => ({ ...prev, [name]: value }))}
+                  onStartWorkflow={() => setShowWorkflowPanel(false)}
+                />
+              </div>
+            )}
           </div>
 
           <div>
-            <h3
-              style={{
-                fontSize: "var(--text-sm)",
-                color: "var(--text-muted)",
-                marginBottom: "var(--space-2)",
-              }}
-            >
-              ExecutionModeToggle
-            </h3>
-            <ExecutionModeToggle
-              value={executionMode}
-              onChange={setExecutionMode}
-            />
-          </div>
-
-          <div>
-            <h3
-              style={{
-                fontSize: "var(--text-sm)",
-                color: "var(--text-muted)",
-                marginBottom: "var(--space-2)",
-              }}
-            >
-              StreamingOutput
-            </h3>
-            <div style={{ height: "150px" }}>
-              <StreamingOutput content="Analyzing codebase...\nFound 12 files matching pattern\nProcessing src/auth/login.ts...\nGenerating recommendations..." />
-            </div>
-          </div>
-
-          <div>
-            <h3
-              style={{
-                fontSize: "var(--text-sm)",
-                color: "var(--text-muted)",
-                marginBottom: "var(--space-2)",
-              }}
-            >
-              ErrorStateCard
-            </h3>
-            <ErrorStateCard
-              fileReference="src/auth/login.ts:42"
-              errorMessage="TypeError: Cannot read property 'user' of undefined"
-              fullStack="at AuthService.login (src/auth/login.ts:42)\nat processTicksAndRejections (internal/process/task_queues.js:95)"
-            />
-          </div>
-
-          <div>
-            <h3
-              style={{
-                fontSize: "var(--text-sm)",
-                color: "var(--text-muted)",
-                marginBottom: "var(--space-2)",
-              }}
-            >
+            <h3 style={{ fontSize: "var(--text-sm)", color: "var(--text-muted)", marginBottom: "var(--space-2)" }}>
               ToolRow & MCPServerRow
             </h3>
-            <div
-              style={{
-                display: "grid",
-                gap: "var(--space-2)",
-                maxWidth: "500px",
-              }}
-            >
-              <ToolRow
-                name="file_read"
-                packageName="@smith/tools"
-                enabled={true}
-                onToggle={() => {}}
-                description="Read contents of a file"
-              />
-              <ToolRow
-                name="file_write"
-                packageName="@smith/tools"
-                enabled={false}
-                onToggle={() => {}}
-              />
-              <MCPServerRow
-                name="default"
-                status="running"
-                config={{ port: "3000", host: "localhost" }}
-              />
+            <div style={{ display: "grid", gap: "var(--space-2)", maxWidth: "500px" }}>
+              <ToolRow name="file_read" packageName="@smith/tools" enabled={true} onToggle={() => {}} description="Read contents of a file" />
+              <ToolRow name="file_write" packageName="@smith/tools" enabled={false} onToggle={() => {}} />
+              <MCPServerRow name="default" status="running" config={{ port: "3000", host: "localhost" }} />
               <MCPServerRow name="external" status="stopped" />
             </div>
           </div>
@@ -1076,29 +521,14 @@ export function DevRoute() {
 
       {/* Layouts */}
       <section>
-        <h2
-          style={{
-            fontSize: "var(--text-xl)",
-            marginBottom: "var(--space-4)",
-            color: "var(--text-secondary)",
-          }}
-        >
+        <h2 style={{ fontSize: "var(--text-xl)", marginBottom: "var(--space-4)", color: "var(--text-secondary)" }}>
           Layouts
         </h2>
 
         <div style={{ display: "flex", gap: "var(--space-2)", flexWrap: "wrap" }}>
-          <Button onClick={() => navigate("/")}>
-            ProjectBrowser
-          </Button>
-          <Button onClick={() => navigate("/project/demo")}>
-            Workspace
-          </Button>
-          <Button onClick={() => navigate("/project/demo/session/demo")}>
-            Active Session
-          </Button>
-          <Button onClick={() => navigate("/project/demo/history")}>
-            History
-          </Button>
+          <Button onClick={() => navigate("/")}>ProjectBrowser</Button>
+          <Button onClick={() => navigate("/project/demo")}>Workspace</Button>
+          <Button onClick={() => navigate("/project/demo/session/demo")}>Pipeline Session</Button>
         </div>
       </section>
     </div>

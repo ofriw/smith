@@ -4,6 +4,7 @@ import { ProviderRow, ProviderRowProps, SearchInput } from "../molecules/index.t
 import { Modal } from "./Modal.tsx";
 import { ToolRow, ToolRowProps } from "./ToolRow.tsx";
 import { MCPServerRow, MCPServerRowProps } from "./MCPServerRow.tsx";
+import { AppearanceSettingsPanel } from "./AppearanceSettingsPanel.tsx";
 
 export type SettingsModalProps = {
   open: boolean;
@@ -42,7 +43,8 @@ export function SettingsModal({
 }: SettingsModalProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [expandedSections, setExpandedSections] = useState({
-    providers: true,
+    appearance: true,
+    providers: false,
     tools: false,
     mcpServers: false,
     advanced: false,
@@ -69,6 +71,33 @@ export function SettingsModal({
             placeholder="Search settings..."
           />
         </div>
+
+        {/* Appearance Section */}
+        <section className="settings-modal__section">
+          <button
+            className="settings-modal__section-toggle"
+            onClick={() => toggleSection('appearance')}
+            aria-expanded={expandedSections.appearance}
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              width="16"
+              height="16"
+              className={`settings-modal__section-chevron ${expandedSections.appearance ? 'settings-modal__section-chevron--expanded' : ''}`}
+            >
+              <path d="M9 18l6-6-6-6" />
+            </svg>
+            <h3 className="settings-modal__section-title">Appearance</h3>
+          </button>
+          {expandedSections.appearance && (
+            <div className="settings-modal__section-content">
+              <AppearanceSettingsPanel />
+            </div>
+          )}
+        </section>
 
         {/* Providers Section */}
         <section className="settings-modal__section">

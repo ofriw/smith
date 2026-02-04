@@ -1,0 +1,72 @@
+.mcp-server-row {
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius-md);
+  background: var(--surface-elevated);
+  overflow: hidden;
+}
+
+.mcp-server-row__header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  cursor: pointer;
+  transition: background-color var(--duration-fast) var(--ease-default);
+}
+
+.mcp-server-row__header:hover {
+  background: var(--interactive-bg);
+}
+
+.mcp-server-row__name {
+  flex: 1;
+  font-size: var(--text-sm);
+  font-weight: var(--font-semibold);
+  color: var(--text-primary);
+}
+
+.mcp-server-row__expand {
+  transition: transform var(--duration-fast) var(--ease-default);
+}
+
+.mcp-server-row--expanded .mcp-server-row__expand {
+  transform: rotate(180deg);
+}
+
+.mcp-server-row__config {
+  padding: var(--space-3);
+  padding-top: 0;
+  border-top: 1px solid var(--surface-border-subtle);
+}
+
+.mcp-server-row__config-title {
+  font-size: var(--text-xs);
+  font-weight: var(--font-medium);
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: var(--space-2);
+}
+
+.mcp-server-row__config-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.mcp-server-row__config-item {
+  display: flex;
+  gap: var(--space-2);
+  font-size: var(--text-xs);
+}
+
+.mcp-server-row__config-key {
+  font-family: var(--font-mono);
+  color: var(--text-muted);
+  min-width: 80px;
+}
+
+.mcp-server-row__config-value {
+  font-family: var(--font-mono);
+  color: var(--text-primary);
+}

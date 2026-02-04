@@ -5,7 +5,7 @@ startDebugServer({
   path: ".smith/data",
   jsPath: "client/app.tsx",
   htmlPath: "client/index.html",
-  cssPath: "client/index.css",
+  cssPath: "client/bundled.css",
   assetsPath: "client/assets",
   watchDir: ".",
   orgId: "smith",

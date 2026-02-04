@@ -1,5 +1,5 @@
 import { useEffect, useCallback } from "react";
-import type { ExecutionMode } from "../components/organisms/ExecutionModeToggle.tsx";
+import type { ExecutionMode } from "../contexts/SessionContext.tsx";
 
 export type KeyboardShortcutHandlers = {
   onPause?: () => void;
@@ -16,9 +16,8 @@ export type KeyboardShortcutOptions = {
 };
 
 const executionModeMap: Record<string, ExecutionMode> = {
-  "1": "confirm-all",
-  "2": "steps-only",
-  "3": "autonomous",
+  "1": "steps-only",
+  "2": "continuous",
 };
 
 export function useKeyboardShortcuts(

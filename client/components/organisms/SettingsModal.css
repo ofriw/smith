@@ -1,0 +1,120 @@
+.settings-modal {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.settings-modal__search {
+  margin-bottom: var(--space-4);
+}
+
+.settings-modal__section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.settings-modal__section-toggle {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  width: 100%;
+  padding: var(--space-2) 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+}
+
+.settings-modal__section-toggle:hover {
+  background: var(--interactive-bg);
+}
+
+.settings-modal__section-chevron {
+  color: var(--text-muted);
+  transition: transform var(--duration-fast) var(--ease-default);
+}
+
+.settings-modal__section-chevron--expanded {
+  transform: rotate(90deg);
+}
+
+.settings-modal__section-title {
+  font-size: var(--text-sm);
+  font-weight: var(--font-semibold);
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.settings-modal__section-count {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+}
+
+.settings-modal__section-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding-left: var(--space-4);
+}
+
+.settings-modal__advanced-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: inherit;
+}
+
+.settings-modal__advanced-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding-top: var(--space-3);
+}
+
+.settings-modal__field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.settings-modal__field-label {
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+}
+
+.settings-modal__empty {
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+  font-style: italic;
+  padding: var(--space-3);
+  text-align: center;
+}
+
+.settings-modal__footer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--surface-border-subtle);
+}
+
+.settings-modal__config-path {
+  display: flex;
+  gap: var(--space-2);
+  font-size: var(--text-xs);
+}
+
+.settings-modal__config-label {
+  color: var(--text-muted);
+}
+
+.settings-modal__config-value {
+  font-family: var(--font-mono);
+  color: var(--text-secondary);
+}

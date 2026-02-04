@@ -1,0 +1,36 @@
+.loading-spinner {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+}
+
+.loading-spinner--sm {
+  width: 16px;
+  height: 16px;
+}
+
+.loading-spinner--md {
+  width: 24px;
+  height: 24px;
+}
+
+.loading-spinner--lg {
+  width: 32px;
+  height: 32px;
+}
+
+.loading-spinner__icon {
+  width: 100%;
+  height: 100%;
+  animation: spinner-rotate 1s linear infinite;
+}
+
+@keyframes spinner-rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}

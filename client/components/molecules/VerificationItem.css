@@ -1,0 +1,99 @@
+.verification-item {
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius-md);
+  background: var(--surface-elevated);
+  overflow: hidden;
+}
+
+.verification-item__header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  cursor: pointer;
+}
+
+.verification-item__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+.verification-item__icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.verification-item--pass .verification-item__icon {
+  color: var(--status-success);
+}
+
+.verification-item--fail .verification-item__icon {
+  color: var(--status-error);
+}
+
+.verification-item--pending .verification-item__icon {
+  color: var(--text-muted);
+}
+
+.verification-item--skipped .verification-item__icon {
+  color: var(--text-muted);
+}
+
+.verification-item__label {
+  flex: 1;
+  font-size: var(--text-sm);
+  color: var(--text-primary);
+}
+
+.verification-item__status {
+  font-size: var(--text-xs);
+  font-weight: var(--font-medium);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.verification-item--pass .verification-item__status {
+  color: var(--status-success);
+}
+
+.verification-item--fail .verification-item__status {
+  color: var(--status-error);
+}
+
+.verification-item--pending .verification-item__status {
+  color: var(--text-muted);
+}
+
+.verification-item--skipped .verification-item__status {
+  color: var(--text-muted);
+}
+
+.verification-item__expand {
+  transition: transform var(--duration-fast) var(--ease-default);
+}
+
+.verification-item--expanded .verification-item__expand {
+  transform: rotate(180deg);
+}
+
+.verification-item__details {
+  padding: var(--space-3);
+  padding-top: 0;
+  border-top: 1px solid var(--surface-border-subtle);
+}
+
+.verification-item__details-content {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--status-error);
+  background: var(--status-error-muted);
+  padding: var(--space-2);
+  border-radius: var(--radius-sm);
+  margin: 0;
+  overflow-x: auto;
+  white-space: pre-wrap;
+}

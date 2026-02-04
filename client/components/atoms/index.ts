@@ -30,3 +30,6 @@ export type { RadioGroupProps, RadioOption } from "./RadioGroup.tsx";
 
 export { LoadingSpinner } from "./LoadingSpinner.tsx";
 export type { LoadingSpinnerProps, LoadingSpinnerSize } from "./LoadingSpinner.tsx";
+
+export { ColorSwatch } from "./ColorSwatch.tsx";
+export type { ColorSwatchProps } from "./ColorSwatch.tsx";

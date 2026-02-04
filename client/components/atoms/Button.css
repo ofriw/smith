@@ -1,0 +1,125 @@
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  font-family: var(--font-sans);
+  font-weight: var(--font-medium);
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: background-color var(--duration-fast) var(--ease-default),
+              color var(--duration-fast) var(--ease-default),
+              opacity var(--duration-fast) var(--ease-default);
+  position: relative;
+}
+
+.button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* Sizes */
+.button--sm {
+  padding: var(--space-1) var(--space-2);
+  font-size: var(--text-xs);
+  height: 28px;
+}
+
+.button--md {
+  padding: var(--space-2) var(--space-4);
+  font-size: var(--text-sm);
+  height: 36px;
+}
+
+.button--lg {
+  padding: var(--space-3) var(--space-6);
+  font-size: var(--text-base);
+  height: 44px;
+}
+
+/* Variants */
+.button--primary {
+  background: var(--accent-primary);
+  color: var(--text-inverse);
+}
+
+.button--primary:hover:not(:disabled) {
+  background: var(--accent-primary-hover);
+}
+
+.button--primary:active:not(:disabled) {
+  background: var(--accent-primary-active);
+}
+
+.button--secondary {
+  background: var(--interactive-bg);
+  color: var(--text-primary);
+  border: 1px solid var(--surface-border);
+}
+
+.button--secondary:hover:not(:disabled) {
+  background: var(--interactive-hover);
+}
+
+.button--secondary:active:not(:disabled) {
+  background: var(--interactive-active);
+}
+
+.button--ghost {
+  background: transparent;
+  color: var(--text-secondary);
+}
+
+.button--ghost:hover:not(:disabled) {
+  background: var(--interactive-bg);
+  color: var(--text-primary);
+}
+
+.button--ghost:active:not(:disabled) {
+  background: var(--interactive-active);
+}
+
+.button--danger {
+  background: var(--status-error);
+  color: var(--text-inverse);
+}
+
+.button--danger:hover:not(:disabled) {
+  background: var(--red-600);
+}
+
+.button--danger:active:not(:disabled) {
+  background: var(--red-400);
+}
+
+/* Loading state */
+.button--loading {
+  cursor: wait;
+}
+
+.button__spinner {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.button__spinner-icon {
+  width: 1em;
+  height: 1em;
+  animation: button-spin 1s linear infinite;
+}
+
+.button__content--hidden {
+  visibility: hidden;
+}
+
+@keyframes button-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}

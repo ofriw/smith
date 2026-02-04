@@ -9,6 +9,10 @@ export const kSchemaGlobalSettings = {
     defaultModel: { type: "string" },
     maxTokens: { type: "number" },
     temperature: { type: "number" },
+    density: { type: "string", default: () => "default" },
+    radius: { type: "string", default: () => "default" },
+    fontScale: { type: "string", default: () => "default" },
+    accentColor: { type: "string", default: () => "blue" },
   },
 } as const;
 

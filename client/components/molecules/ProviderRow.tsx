@@ -74,13 +74,15 @@ export function ProviderRow({
 
       {models.length > 0 && (
         <div className="provider-row__models">
-          <div className="provider-row__models-title">
-            Models ({models.length})
-          </div>
-          <div className="provider-row__models-list">
-            {models.map((model) => (
-              <Chip key={model}>{model}</Chip>
-            ))}
+          <div className="provider-row__models-inner">
+            <div className="provider-row__models-title">
+              Models ({models.length})
+            </div>
+            <div className="provider-row__models-list">
+              {models.map((model) => (
+                <Chip key={model}>{model}</Chip>
+              ))}
+            </div>
           </div>
         </div>
       )}

@@ -1,7 +1,25 @@
 import React, { createContext, useContext, useState, useCallback, useMemo } from "react";
-import type { ExecutionMode } from "../components/organisms/ExecutionModeToggle.tsx";
-import type { Step } from "../components/molecules/StepBreadcrumb.tsx";
-import type { TimelineCall } from "../components/organisms/TimelinePanel.tsx";
+
+export type ExecutionMode = "steps-only" | "continuous";
+
+export type StepStatus = "pending" | "active" | "completed" | "error";
+
+export type Step = {
+  name: string;
+  status: StepStatus;
+  tokens?: number;
+  duration?: number;
+};
+
+export type ToolCall = {
+  id: string;
+  toolName: string;
+  status: "running" | "done" | "error";
+  stepName?: string;
+  description?: string;
+  input?: string;
+  output?: string;
+};
 
 export type SessionStatus =
   | "idle"
@@ -17,8 +35,9 @@ export type SessionState = {
   executionMode: ExecutionMode;
   steps: Step[];
   currentStepIndex: number;
-  toolCalls: TimelineCall[];
+  toolCalls: ToolCall[];
   streamingOutput: string;
+  globalInputs: Record<string, unknown>;
   inputData: Record<string, unknown>;
   outputData: Record<string, unknown>;
   startedAt: Date | null;
@@ -30,11 +49,9 @@ type SessionContextValue = SessionState & {
   setExecutionMode: (mode: ExecutionMode) => void;
   setStatus: (status: SessionStatus) => void;
   appendStreamingOutput: (text: string) => void;
-  addToolCall: (call: TimelineCall) => void;
-  updateToolCall: (
-    id: string,
-    updates: Partial<TimelineCall>,
-  ) => void;
+  addToolCall: (call: ToolCall) => void;
+  updateToolCall: (id: string, updates: Partial<ToolCall>) => void;
+  setGlobalInputs: (data: Record<string, unknown>) => void;
   setInputData: (data: Record<string, unknown>) => void;
   setOutputData: (data: Record<string, unknown>) => void;
   setSteps: (steps: Step[]) => void;
@@ -48,6 +65,7 @@ const SessionContext = createContext<SessionContextValue | null>(null);
 type SessionProviderProps = {
   sessionId: string;
   workflowName?: string;
+  globalInputs?: Record<string, unknown>;
   children: React.ReactNode;
 };
 
@@ -58,6 +76,7 @@ const initialState: Omit<SessionState, "id" | "workflowName"> = {
   currentStepIndex: 0,
   toolCalls: [],
   streamingOutput: "",
+  globalInputs: {},
   inputData: {},
   outputData: {},
   startedAt: null,
@@ -68,12 +87,14 @@ const initialState: Omit<SessionState, "id" | "workflowName"> = {
 export function SessionProvider({
   sessionId,
   workflowName = "Untitled Workflow",
+  globalInputs: initialGlobalInputs = {},
   children,
 }: SessionProviderProps) {
   const [state, setState] = useState<SessionState>({
     ...initialState,
     id: sessionId,
     workflowName,
+    globalInputs: initialGlobalInputs,
   });
 
   const setExecutionMode = useCallback((mode: ExecutionMode) => {
@@ -97,12 +118,12 @@ export function SessionProvider({
     setState((s) => ({ ...s, streamingOutput: s.streamingOutput + text }));
   }, []);
 
-  const addToolCall = useCallback((call: TimelineCall) => {
+  const addToolCall = useCallback((call: ToolCall) => {
     setState((s) => ({ ...s, toolCalls: [...s.toolCalls, call] }));
   }, []);
 
   const updateToolCall = useCallback(
-    (id: string, updates: Partial<TimelineCall>) => {
+    (id: string, updates: Partial<ToolCall>) => {
       setState((s) => ({
         ...s,
         toolCalls: s.toolCalls.map((tc) =>
@@ -112,6 +133,10 @@ export function SessionProvider({
     },
     [],
   );
+
+  const setGlobalInputs = useCallback((data: Record<string, unknown>) => {
+    setState((s) => ({ ...s, globalInputs: data }));
+  }, []);
 
   const setInputData = useCallback((data: Record<string, unknown>) => {
     setState((s) => ({ ...s, inputData: data }));
@@ -148,6 +173,7 @@ export function SessionProvider({
     appendStreamingOutput,
     addToolCall,
     updateToolCall,
+    setGlobalInputs,
     setInputData,
     setOutputData,
     setSteps,
@@ -161,6 +187,7 @@ export function SessionProvider({
     appendStreamingOutput,
     addToolCall,
     updateToolCall,
+    setGlobalInputs,
     setInputData,
     setOutputData,
     setSteps,

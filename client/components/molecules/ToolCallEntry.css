@@ -50,14 +50,27 @@
 }
 
 .tool-call-entry__body {
-  display: none;
-  padding: var(--space-3);
-  padding-top: 0;
-  border-top: 1px solid var(--surface-border-subtle);
+  display: grid;
+  grid-template-rows: 0fr;
+  overflow: hidden;
+  transition: grid-template-rows var(--duration-normal) var(--ease-default);
+  border-top: 0 solid var(--surface-border-subtle);
 }
 
 .tool-call-entry--expanded .tool-call-entry__body {
-  display: block;
+  grid-template-rows: 1fr;
+  border-top-width: 1px;
+}
+
+.tool-call-entry__body-inner {
+  overflow: hidden;
+  min-height: 0;
+  padding: var(--space-3);
+  padding-top: 0;
+}
+
+.tool-call-entry--expanded .tool-call-entry__body-inner {
+  padding-top: var(--space-3);
 }
 
 .tool-call-entry__description {
@@ -65,6 +78,9 @@
   color: var(--text-secondary);
   margin-bottom: var(--space-3);
   font-style: italic;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .tool-call-entry__input {

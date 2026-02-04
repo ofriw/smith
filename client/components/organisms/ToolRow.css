@@ -1,0 +1,102 @@
+.tool-row {
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius-md);
+  background: var(--surface-elevated);
+  overflow: hidden;
+}
+
+.tool-row__header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  cursor: pointer;
+  transition: background-color var(--duration-fast) var(--ease-default);
+}
+
+.tool-row__header:hover {
+  background: var(--interactive-bg);
+}
+
+.tool-row__toggle {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.tool-row__checkbox {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.tool-row__checkmark {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border: 2px solid var(--surface-border);
+  border-radius: var(--radius-sm);
+  background: var(--surface-bg);
+  transition: background-color var(--duration-fast) var(--ease-default),
+              border-color var(--duration-fast) var(--ease-default);
+}
+
+.tool-row__checkbox:checked + .tool-row__checkmark {
+  background: var(--accent-primary);
+  border-color: var(--accent-primary);
+}
+
+.tool-row__checkbox:checked + .tool-row__checkmark::after {
+  content: "";
+  width: 4px;
+  height: 8px;
+  border: solid var(--text-inverse);
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+  margin-bottom: 2px;
+}
+
+.tool-row__info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.tool-row__name {
+  font-size: var(--text-sm);
+  font-weight: var(--font-semibold);
+  color: var(--text-primary);
+}
+
+.tool-row__package {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+}
+
+.tool-row__expand {
+  transition: transform var(--duration-fast) var(--ease-default);
+}
+
+.tool-row--expanded .tool-row__expand {
+  transform: rotate(180deg);
+}
+
+.tool-row__details {
+  padding: var(--space-3);
+  padding-top: 0;
+  border-top: 1px solid var(--surface-border-subtle);
+}
+
+.tool-row__description {
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  line-height: var(--leading-relaxed);
+}

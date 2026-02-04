@@ -36,13 +36,13 @@
   --interactive-bg: var(--gray-800);
   --interactive-hover: var(--gray-700);
   --interactive-active: var(--gray-600);
-  --interactive-focus: var(--blue-500);
-  --interactive-focus-ring: rgb(59 130 246 / 0.5);
+  --interactive-focus: var(--accent-500);
+  --interactive-focus-ring: hsl(var(--hue-accent) 91% 54% / 0.5);
 
-  /* Accent tokens */
-  --accent-primary: var(--blue-500);
-  --accent-primary-hover: var(--blue-400);
-  --accent-primary-active: var(--blue-600);
+  /* Accent tokens - HSL-based for customization */
+  --accent-primary: var(--accent-500);
+  --accent-primary-hover: var(--accent-400);
+  --accent-primary-active: var(--accent-600);
 }
 
 /* -----------------------------------------------------------------------------
@@ -78,11 +78,11 @@
   --interactive-bg: var(--gray-100);
   --interactive-hover: var(--gray-200);
   --interactive-active: var(--gray-300);
-  --interactive-focus: var(--blue-600);
-  --interactive-focus-ring: rgb(37 99 235 / 0.3);
+  --interactive-focus: var(--accent-600);
+  --interactive-focus-ring: hsl(var(--hue-accent) 91% 46% / 0.3);
 
-  /* Accent tokens */
-  --accent-primary: var(--blue-600);
-  --accent-primary-hover: var(--blue-500);
-  --accent-primary-active: var(--blue-700);
+  /* Accent tokens - HSL-based for customization */
+  --accent-primary: var(--accent-600);
+  --accent-primary-hover: var(--accent-500);
+  --accent-primary-active: hsl(var(--hue-accent) 91% 38%);
 }
