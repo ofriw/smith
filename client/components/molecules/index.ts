@@ -28,3 +28,9 @@ export type { StepSectionProps, StepStatus } from "./StepSection.tsx";
 
 export { DataSummary } from "./DataSummary.tsx";
 export type { DataSummaryProps } from "./DataSummary.tsx";
+
+export { ActivityBarItem } from "./ActivityBarItem.tsx";
+export type { ActivityBarItemProps } from "./ActivityBarItem.tsx";
+
+export { CollapsedStepSummary } from "./CollapsedStepSummary.tsx";
+export type { CollapsedStepSummaryProps } from "./CollapsedStepSummary.tsx";

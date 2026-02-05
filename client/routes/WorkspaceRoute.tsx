@@ -1,11 +1,14 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useProjectContext, SessionProvider, useSessionContext } from "../contexts/index.ts";
 import { PipelineLayout } from "../components/layouts/index.ts";
+import { IDEShell } from "../components/layouts/IDEShell.tsx";
+import { StepOutline } from "../components/organisms/StepOutline.tsx";
 import { useKeyboardShortcuts } from "../hooks/index.ts";
 import type { SchemaField } from "../components/organisms/SchemaForm.tsx";
 import type { Step, ToolCall } from "../contexts/SessionContext.tsx";
 import type { Step as PipelineStep, ToolCall as PipelineToolCall } from "../components/layouts/PipelineLayout.tsx";
 import type { InitializeCardProps } from "../components/organisms/InitializeCard.tsx";
+import type { SessionStatus } from "../components/organisms/StatusBar.tsx";
 import {
   MockSessionRunner,
   getScenario,
@@ -70,12 +73,16 @@ type WorkflowSelectionProps = Omit<InitializeCardProps, 'isSessionActive' | 'act
 function SessionContent({
   onEndSession,
   workflowSelection,
+  onPause,
+  onContinue,
 }: {
   onEndSession: () => void;
   workflowSelection: WorkflowSelectionProps;
+  onPause: () => void;
+  onContinue: () => void;
 }) {
   const session = useSessionContext();
-  const runnerRef = useRef<MockSessionRunner | null>(null);
+  const [expandedOutlineSteps, setExpandedOutlineSteps] = useState<Set<number>>(new Set());
 
   const handleRewind = useCallback((stepIndex: number) => {
     session.setCurrentStepIndex(stepIndex);
@@ -90,18 +97,26 @@ function SessionContent({
     session.updateToolCall(callId, { status: "error" });
   }, [session]);
 
-  const handlePause = useCallback(() => {
-    runnerRef.current?.pause();
+  const handleOutlineStepClick = useCallback((index: number) => {
+    // Scroll to step in main view (could be enhanced with scroll sync)
   }, []);
 
-  const handleContinue = useCallback(() => {
-    runnerRef.current?.resume();
+  const handleToggleOutlineExpand = useCallback((index: number) => {
+    setExpandedOutlineSteps((prev) => {
+      const next = new Set(prev);
+      if (next.has(index)) {
+        next.delete(index);
+      } else {
+        next.add(index);
+      }
+      return next;
+    });
   }, []);
 
   useKeyboardShortcuts(
     {
-      onPause: handlePause,
-      onContinue: handleContinue,
+      onPause,
+      onContinue,
       onSetExecutionMode: session.setExecutionMode,
     },
     {
@@ -110,9 +125,6 @@ function SessionContent({
       isPaused: session.status === "paused",
     }
   );
-
-  const isRunning = session.status === "running";
-  const isPaused = session.status === "paused";
 
   const pipelineSteps: PipelineStep[] = session.steps.map((s) => ({
     name: s.name,
@@ -137,29 +149,50 @@ function SessionContent({
     outputData: session.outputData,
   });
 
-  return (
-    <PipelineLayout
-      steps={pipelineSteps}
-      currentStepIndex={session.currentStepIndex}
-      stepData={stepData}
-      toolCalls={pipelineToolCalls}
-      streamingOutput={session.streamingOutput}
-      isRunning={isRunning}
-      isPaused={isPaused}
-      workflowName={session.workflowName}
-      workflowSelection={workflowSelection}
-      onPause={handlePause}
-      onContinue={handleContinue}
-      onRewind={handleRewind}
-      onRevert={handleRevert}
-      onEndSession={onEndSession}
-    />
-  );
+  const outlineSteps = session.steps.map((s) => ({
+    name: s.name,
+    status: s.status as PipelineStep["status"],
+    tokens: s.tokens,
+    duration: s.duration,
+  }));
+
+  return {
+    pipelineContent: (
+      <PipelineLayout
+        steps={pipelineSteps}
+        currentStepIndex={session.currentStepIndex}
+        stepData={stepData}
+        toolCalls={pipelineToolCalls}
+        streamingOutput={session.streamingOutput}
+        isRunning={session.status === "running"}
+        isPaused={session.status === "paused"}
+        workflowName={session.workflowName}
+        workflowSelection={workflowSelection}
+        onPause={onPause}
+        onContinue={onContinue}
+        onRewind={handleRewind}
+        onRevert={handleRevert}
+        onEndSession={onEndSession}
+      />
+    ),
+    sidebarContent: (
+      <StepOutline
+        steps={outlineSteps}
+        currentStepIndex={session.currentStepIndex}
+        expandedSteps={expandedOutlineSteps}
+        onStepClick={handleOutlineStepClick}
+        onToggleExpand={handleToggleOutlineExpand}
+      />
+    ),
+    sessionStatus: session.status as SessionStatus,
+    currentStepIndex: session.currentStepIndex,
+    totalSteps: session.steps.length,
+    workflowName: session.workflowName,
+  };
 }
 
-function SessionRunner({ workflowName }: { workflowName: string }) {
+function SessionRunner({ workflowName, runnerRef }: { workflowName: string; runnerRef: React.MutableRefObject<MockSessionRunner | null> }) {
   const session = useSessionContext();
-  const runnerRef = useRef<MockSessionRunner | null>(null);
   const hasStarted = useRef(false);
 
   const callbacksRef = useRef(session);
@@ -202,7 +235,7 @@ function SessionRunner({ workflowName }: { workflowName: string }) {
     return () => {
       runner.stop();
     };
-  }, [workflowName]);
+  }, [workflowName, runnerRef]);
 
   useEffect(() => {
     const runner = runnerRef.current;
@@ -213,9 +246,75 @@ function SessionRunner({ workflowName }: { workflowName: string }) {
     } else if (session.status === "running") {
       runner.resume();
     }
-  }, [session.status]);
+  }, [session.status, runnerRef]);
 
   return null;
+}
+
+function SessionWrapper({
+  sessionId,
+  workflowName,
+  globalInputs,
+  onEndSession,
+  workflowSelection,
+  children,
+}: {
+  sessionId: string;
+  workflowName: string;
+  globalInputs: Record<string, unknown>;
+  onEndSession: () => void;
+  workflowSelection: WorkflowSelectionProps;
+  children: (content: ReturnType<typeof SessionContent>) => React.ReactNode;
+}) {
+  const runnerRef = useRef<MockSessionRunner | null>(null);
+
+  const handlePause = useCallback(() => {
+    runnerRef.current?.pause();
+  }, []);
+
+  const handleContinue = useCallback(() => {
+    runnerRef.current?.resume();
+  }, []);
+
+  return (
+    <SessionProvider
+      sessionId={sessionId}
+      workflowName={workflowName}
+      globalInputs={globalInputs}
+    >
+      <SessionRunner workflowName={workflowName} runnerRef={runnerRef} />
+      <SessionContentRenderer
+        onEndSession={onEndSession}
+        workflowSelection={workflowSelection}
+        onPause={handlePause}
+        onContinue={handleContinue}
+        children={children}
+      />
+    </SessionProvider>
+  );
+}
+
+function SessionContentRenderer({
+  onEndSession,
+  workflowSelection,
+  onPause,
+  onContinue,
+  children,
+}: {
+  onEndSession: () => void;
+  workflowSelection: WorkflowSelectionProps;
+  onPause: () => void;
+  onContinue: () => void;
+  children: (content: ReturnType<typeof SessionContent>) => React.ReactNode;
+}) {
+  const content = SessionContent({
+    onEndSession,
+    workflowSelection,
+    onPause,
+    onContinue,
+  });
+
+  return <>{children(content)}</>;
 }
 
 export function WorkspaceRoute() {
@@ -273,45 +372,66 @@ export function WorkspaceRoute() {
     isStartDisabled: !selectedWorkflowId,
   };
 
-  return (
-    <div className="workspace-layout">
-      <header className="workspace-layout__header">
-        <h1 className="workspace-layout__title">{name || "Project"}</h1>
-        <span className="workspace-layout__branch">{branch || "main"}</span>
-        <span className="workspace-layout__path">{path}</span>
-      </header>
-
-      <div className="workspace-layout__content">
-        {hasActiveSession ? (
-          <SessionProvider
-            sessionId={workspaceState.sessionId!}
-            workflowName={workspaceState.workflowName!}
-            globalInputs={workspaceState.globalInputs}
-          >
-            <SessionRunner workflowName={workspaceState.workflowName!} />
-            <SessionContent
-              onEndSession={handleEndSession}
-              workflowSelection={workflowSelection}
-            />
-          </SessionProvider>
-        ) : (
-          <PipelineLayout
-            steps={[]}
-            currentStepIndex={0}
-            stepData={new Map()}
-            toolCalls={[]}
-            streamingOutput=""
-            isRunning={false}
-            isPaused={false}
-            workflowSelection={workflowSelection}
+  if (hasActiveSession) {
+    return (
+      <SessionWrapper
+        sessionId={workspaceState.sessionId!}
+        workflowName={workspaceState.workflowName!}
+        globalInputs={workspaceState.globalInputs}
+        onEndSession={handleEndSession}
+        workflowSelection={workflowSelection}
+      >
+        {(content) => (
+          <IDEShell
+            projectName={name || "Project"}
+            branch={branch}
+            path={path}
+            sessionStatus={content.sessionStatus}
+            currentStep={content.currentStepIndex}
+            totalSteps={content.totalSteps}
+            workflowName={content.workflowName}
             onPause={() => {}}
             onContinue={() => {}}
-            onRewind={() => {}}
-            onRevert={() => {}}
-            onEndSession={() => {}}
-          />
+            onEndSession={handleEndSession}
+            sidebarContent={content.sidebarContent}
+          >
+            {content.pipelineContent}
+          </IDEShell>
         )}
-      </div>
-    </div>
+      </SessionWrapper>
+    );
+  }
+
+  return (
+    <IDEShell
+      projectName={name || "Project"}
+      branch={branch}
+      path={path}
+      sessionStatus="idle"
+      sidebarContent={
+        <StepOutline
+          steps={[]}
+          currentStepIndex={0}
+          expandedSteps={new Set()}
+          onStepClick={() => {}}
+        />
+      }
+    >
+      <PipelineLayout
+        steps={[]}
+        currentStepIndex={0}
+        stepData={new Map()}
+        toolCalls={[]}
+        streamingOutput=""
+        isRunning={false}
+        isPaused={false}
+        workflowSelection={workflowSelection}
+        onPause={() => {}}
+        onContinue={() => {}}
+        onRewind={() => {}}
+        onRevert={() => {}}
+        onEndSession={() => {}}
+      />
+    </IDEShell>
   );
 }

@@ -1,0 +1,175 @@
+/* =============================================================================
+   IDE Shell Layout
+   Grid-based container with activity bar, sidebar, main content, and status bar
+   ============================================================================= */
+
+:root {
+  --shell-activity-bar-width: 48px;
+  --shell-sidebar-width: 280px;
+  --shell-sidebar-collapsed-width: 0px;
+  --shell-status-bar-height: 24px;
+}
+
+.ide-shell {
+  display: grid;
+  grid-template-areas:
+    "activity sidebar main"
+    "status   status  status";
+  grid-template-columns: var(--shell-activity-bar-width) var(--shell-sidebar-width) 1fr;
+  grid-template-rows: 1fr var(--shell-status-bar-height);
+  height: 100vh;
+  background: var(--surface-bg);
+}
+
+.ide-shell--sidebar-collapsed {
+  grid-template-columns: var(--shell-activity-bar-width) var(--shell-sidebar-collapsed-width) 1fr;
+}
+
+/* Activity Bar */
+.ide-shell__activity-bar {
+  grid-area: activity;
+  display: flex;
+  flex-direction: column;
+  background: var(--surface-elevated);
+  border-right: 1px solid var(--surface-border);
+  padding: var(--space-2) 0;
+}
+
+.ide-shell__activity-bar-top {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: 0 var(--space-1);
+}
+
+.ide-shell__activity-bar-bottom {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: 0 var(--space-1);
+}
+
+/* Sidebar */
+.ide-shell__sidebar {
+  grid-area: sidebar;
+  display: flex;
+  flex-direction: column;
+  background: var(--surface-elevated);
+  border-right: 1px solid var(--surface-border);
+  overflow: hidden;
+  transition: width var(--duration-normal) var(--ease-default);
+}
+
+.ide-shell--sidebar-collapsed .ide-shell__sidebar {
+  width: 0;
+  border-right: none;
+}
+
+.ide-shell__sidebar-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-3);
+  border-bottom: 1px solid var(--surface-border-subtle);
+  flex-shrink: 0;
+}
+
+.ide-shell__sidebar-title {
+  font-size: var(--text-xs);
+  font-weight: var(--font-semibold);
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0;
+}
+
+.ide-shell__sidebar-content {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* Main Content */
+.ide-shell__main {
+  grid-area: main;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--surface-bg);
+}
+
+.ide-shell__main-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-4);
+  background: var(--surface-elevated);
+  border-bottom: 1px solid var(--surface-border);
+  flex-shrink: 0;
+}
+
+.ide-shell__main-title {
+  font-size: var(--text-sm);
+  font-weight: var(--font-semibold);
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.ide-shell__main-meta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-left: auto;
+}
+
+.ide-shell__main-branch {
+  font-size: var(--text-xs);
+  font-family: var(--font-mono);
+  color: var(--text-muted);
+  padding: var(--space-1) var(--space-2);
+  background: var(--interactive-bg);
+  border-radius: var(--radius-sm);
+}
+
+.ide-shell__main-path {
+  font-size: var(--text-xs);
+  font-family: var(--font-mono);
+  color: var(--text-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 300px;
+}
+
+.ide-shell__main-content {
+  flex: 1;
+  overflow: hidden;
+}
+
+/* Status Bar */
+.ide-shell__status-bar {
+  grid-area: status;
+}
+
+/* Tablet breakpoint - collapse sidebar by default */
+@media (max-width: 1023px) {
+  :root {
+    --shell-sidebar-width: 240px;
+  }
+}
+
+/* Mobile breakpoint - hide activity bar, full-width main */
+@media (max-width: 767px) {
+  .ide-shell {
+    grid-template-areas:
+      "main"
+      "status";
+    grid-template-columns: 1fr;
+  }
+
+  .ide-shell__activity-bar,
+  .ide-shell__sidebar {
+    display: none;
+  }
+}

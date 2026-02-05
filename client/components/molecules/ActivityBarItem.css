@@ -1,0 +1,71 @@
+/* Activity Bar Item */
+.activity-bar-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-md);
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: background-color var(--duration-fast) var(--ease-default),
+              color var(--duration-fast) var(--ease-default);
+  position: relative;
+}
+
+.activity-bar-item:hover {
+  background: var(--interactive-hover);
+  color: var(--text-secondary);
+}
+
+.activity-bar-item--active {
+  color: var(--text-primary);
+  background: var(--interactive-bg);
+}
+
+.activity-bar-item--active::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 2px;
+  height: 24px;
+  background: var(--accent-primary);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+}
+
+.activity-bar-item:focus-visible {
+  outline: 2px solid var(--interactive-focus);
+  outline-offset: -2px;
+}
+
+.activity-bar-item__icon {
+  width: 20px;
+  height: 20px;
+}
+
+.activity-bar-item__icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* Tooltip on hover */
+.activity-bar-item[title]:hover::after {
+  content: attr(title);
+  position: absolute;
+  left: calc(100% + var(--space-2));
+  top: 50%;
+  transform: translateY(-50%);
+  padding: var(--space-1) var(--space-2);
+  background: var(--surface-overlay);
+  color: var(--text-primary);
+  font-size: var(--text-xs);
+  white-space: nowrap;
+  border-radius: var(--radius-sm);
+  z-index: 100;
+  pointer-events: none;
+  box-shadow: var(--shadow-md);
+}

@@ -6,3 +6,6 @@ export type {
 
 export { PipelineLayout } from "./PipelineLayout.tsx";
 export type { PipelineLayoutProps } from "./PipelineLayout.tsx";
+
+export { IDEShell } from "./IDEShell.tsx";
+export type { IDEShellProps, SidebarView } from "./IDEShell.tsx";

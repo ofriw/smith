@@ -36,3 +36,9 @@ export type { AppearanceSettingsPanelProps } from "./AppearanceSettingsPanel.tsx
 
 export { InitializeCard } from "./InitializeCard.tsx";
 export type { InitializeCardProps } from "./InitializeCard.tsx";
+
+export { StepOutline } from "./StepOutline.tsx";
+export type { StepOutlineProps, OutlineStep } from "./StepOutline.tsx";
+
+export { StatusBar } from "./StatusBar.tsx";
+export type { StatusBarProps, SessionStatus } from "./StatusBar.tsx";

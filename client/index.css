@@ -39,6 +39,8 @@
 @import "./components/molecules/ToolCallEntry.css";
 @import "./components/molecules/VerificationItem.css";
 @import "./components/molecules/WorkflowCard.css";
+@import "./components/molecules/ActivityBarItem.css";
+@import "./components/molecules/CollapsedStepSummary.css";
 
 /* -----------------------------------------------------------------------------
    Organism Components
@@ -55,6 +57,8 @@
 @import "./components/organisms/WelcomeModal.css";
 @import "./components/organisms/WorkflowSelectionPanel.css";
 @import "./components/organisms/AppearanceSettingsPanel.css";
+@import "./components/organisms/StepOutline.css";
+@import "./components/organisms/StatusBar.css";
 
 /* -----------------------------------------------------------------------------
    Layout Components
@@ -62,6 +66,7 @@
 @import "./components/layouts/CompletionLayout.css";
 @import "./components/layouts/PipelineLayout.css";
 @import "./components/layouts/ProjectBrowserLayout.css";
+@import "./components/layouts/IDEShell.css";
 
 /* -----------------------------------------------------------------------------
    Routes

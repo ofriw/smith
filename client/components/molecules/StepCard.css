@@ -6,6 +6,58 @@
   background: transparent;
 }
 
+/* =============================================================================
+   Step Transition Animations
+   ============================================================================= */
+
+@keyframes step-expand {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes step-collapse {
+  from {
+    max-height: 500px;
+    opacity: 1;
+  }
+  to {
+    max-height: 44px;
+    opacity: 0.8;
+  }
+}
+
+@keyframes step-activate {
+  0% {
+    border-left-color: var(--status-pending-muted);
+  }
+  50% {
+    border-left-color: var(--status-running);
+    box-shadow: inset 4px 0 8px -4px var(--status-running-muted);
+  }
+  100% {
+    border-left-color: var(--status-running);
+    box-shadow: none;
+  }
+}
+
+.step--entering {
+  animation: step-expand 250ms ease-out forwards;
+}
+
+.step--completing {
+  animation: step-collapse 250ms ease-out forwards;
+}
+
+.step--activating {
+  animation: step-activate 300ms ease-out forwards;
+}
+
 /* Step Status Variants */
 .step--pending {
   border-left-style: dashed;
@@ -100,6 +152,26 @@
   color: var(--text-muted);
 }
 
+/* Later pending steps (not next) - more faded */
+.step--pending-later {
+  border-left-style: dotted;
+  opacity: 0.5;
+}
+
+.step--pending-later .step__header {
+  padding: var(--space-1) var(--space-4);
+}
+
+.step--pending-later .step__index {
+  width: 16px;
+  height: 16px;
+  font-size: 9px;
+}
+
+.step--pending-later .step__name {
+  font-size: var(--text-xs);
+}
+
 .step__metrics {
   display: flex;
   align-items: center;
@@ -183,4 +255,26 @@
 
 .step .tool-call-entry__tool-name {
   font-size: var(--text-xs);
+}
+
+/* Teaser for next pending step */
+.step--teaser {
+  border-left-style: dashed;
+  border-left-color: var(--accent-primary);
+  opacity: 0.7;
+}
+
+.step--teaser .step__header {
+  padding: var(--space-2) var(--space-4);
+  background: linear-gradient(90deg, var(--accent-900) 0%, transparent 100%);
+}
+
+.step--teaser .step__name {
+  color: var(--accent-primary);
+  font-weight: var(--font-medium);
+}
+
+.step--teaser .step__index {
+  background: var(--accent-900);
+  color: var(--accent-primary);
 }

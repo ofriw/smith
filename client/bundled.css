@@ -1634,6 +1634,58 @@
   background: transparent;
 }
 
+/* =============================================================================
+   Step Transition Animations
+   ============================================================================= */
+
+@keyframes step-expand {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes step-collapse {
+  from {
+    max-height: 500px;
+    opacity: 1;
+  }
+  to {
+    max-height: 44px;
+    opacity: 0.8;
+  }
+}
+
+@keyframes step-activate {
+  0% {
+    border-left-color: var(--status-pending-muted);
+  }
+  50% {
+    border-left-color: var(--status-running);
+    box-shadow: inset 4px 0 8px -4px var(--status-running-muted);
+  }
+  100% {
+    border-left-color: var(--status-running);
+    box-shadow: none;
+  }
+}
+
+.step--entering {
+  animation: step-expand 250ms ease-out forwards;
+}
+
+.step--completing {
+  animation: step-collapse 250ms ease-out forwards;
+}
+
+.step--activating {
+  animation: step-activate 300ms ease-out forwards;
+}
+
 /* Step Status Variants */
 .step--pending {
   border-left-style: dashed;
@@ -1728,6 +1780,26 @@
   color: var(--text-muted);
 }
 
+/* Later pending steps (not next) - more faded */
+.step--pending-later {
+  border-left-style: dotted;
+  opacity: 0.5;
+}
+
+.step--pending-later .step__header {
+  padding: var(--space-1) var(--space-4);
+}
+
+.step--pending-later .step__index {
+  width: 16px;
+  height: 16px;
+  font-size: 9px;
+}
+
+.step--pending-later .step__name {
+  font-size: var(--text-xs);
+}
+
 .step__metrics {
   display: flex;
   align-items: center;
@@ -1811,6 +1883,28 @@
 
 .step .tool-call-entry__tool-name {
   font-size: var(--text-xs);
+}
+
+/* Teaser for next pending step */
+.step--teaser {
+  border-left-style: dashed;
+  border-left-color: var(--accent-primary);
+  opacity: 0.7;
+}
+
+.step--teaser .step__header {
+  padding: var(--space-2) var(--space-4);
+  background: linear-gradient(90deg, var(--accent-900) 0%, transparent 100%);
+}
+
+.step--teaser .step__name {
+  color: var(--accent-primary);
+  font-weight: var(--font-medium);
+}
+
+.step--teaser .step__index {
+  background: var(--accent-900);
+  color: var(--accent-primary);
 }
 
 
@@ -2230,6 +2324,178 @@
 .workflow-card__arrow svg {
   width: 100%;
   height: 100%;
+}
+
+
+/* === ./components/molecules/ActivityBarItem.css === */
+/* Activity Bar Item */
+.activity-bar-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-md);
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: background-color var(--duration-fast) var(--ease-default),
+              color var(--duration-fast) var(--ease-default);
+  position: relative;
+}
+
+.activity-bar-item:hover {
+  background: var(--interactive-hover);
+  color: var(--text-secondary);
+}
+
+.activity-bar-item--active {
+  color: var(--text-primary);
+  background: var(--interactive-bg);
+}
+
+.activity-bar-item--active::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 2px;
+  height: 24px;
+  background: var(--accent-primary);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+}
+
+.activity-bar-item:focus-visible {
+  outline: 2px solid var(--interactive-focus);
+  outline-offset: -2px;
+}
+
+.activity-bar-item__icon {
+  width: 20px;
+  height: 20px;
+}
+
+.activity-bar-item__icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* Tooltip on hover */
+.activity-bar-item[title]:hover::after {
+  content: attr(title);
+  position: absolute;
+  left: calc(100% + var(--space-2));
+  top: 50%;
+  transform: translateY(-50%);
+  padding: var(--space-1) var(--space-2);
+  background: var(--surface-overlay);
+  color: var(--text-primary);
+  font-size: var(--text-xs);
+  white-space: nowrap;
+  border-radius: var(--radius-sm);
+  z-index: 100;
+  pointer-events: none;
+  box-shadow: var(--shadow-md);
+}
+
+
+/* === ./components/molecules/CollapsedStepSummary.css === */
+/* Collapsed Step Summary - Single-line completed step */
+.collapsed-step-summary {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-4);
+  background: transparent;
+  border-left: 3px solid var(--status-success);
+  cursor: pointer;
+  transition: background-color var(--duration-fast) var(--ease-default);
+}
+
+.collapsed-step-summary:hover {
+  background: var(--surface-elevated);
+}
+
+.collapsed-step-summary__index {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  font-size: 10px;
+  font-weight: var(--font-semibold);
+  color: var(--text-inverse);
+  background: var(--status-success);
+  border-radius: var(--radius-full);
+  flex-shrink: 0;
+}
+
+.collapsed-step-summary__name {
+  flex: 1;
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+  color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.collapsed-step-summary__meta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.collapsed-step-summary__checkmark {
+  width: 14px;
+  height: 14px;
+  color: var(--status-success);
+  flex-shrink: 0;
+}
+
+.collapsed-step-summary__checkmark svg {
+  width: 100%;
+  height: 100%;
+}
+
+.collapsed-step-summary__expand {
+  width: 16px;
+  height: 16px;
+  color: var(--text-muted);
+  flex-shrink: 0;
+  opacity: 0;
+  transition: opacity var(--duration-fast) var(--ease-default),
+              transform var(--duration-fast) var(--ease-default);
+}
+
+.collapsed-step-summary:hover .collapsed-step-summary__expand {
+  opacity: 1;
+}
+
+.collapsed-step-summary__expand svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* Animation when collapsing */
+.collapsed-step-summary--entering {
+  animation: summary-enter 200ms ease-out forwards;
+}
+
+@keyframes summary-enter {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 
@@ -3437,6 +3703,371 @@
 }
 
 
+/* === ./components/organisms/StepOutline.css === */
+/* Step Outline - Pipeline minimap for sidebar */
+.step-outline {
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-2) 0;
+}
+
+.step-outline__empty {
+  padding: var(--space-4) var(--space-3);
+  text-align: center;
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+}
+
+/* Outline Item */
+.step-outline-item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  cursor: pointer;
+  transition: background-color var(--duration-fast) var(--ease-default);
+  position: relative;
+}
+
+.step-outline-item:hover {
+  background: var(--interactive-hover);
+}
+
+.step-outline-item--current {
+  background: var(--interactive-bg);
+}
+
+/* Connecting line between steps */
+.step-outline-item::before {
+  content: "";
+  position: absolute;
+  left: calc(var(--space-3) + 9px);
+  top: calc(var(--space-2) + 18px);
+  bottom: calc(-1 * var(--space-2));
+  width: 2px;
+  background: var(--surface-border);
+}
+
+.step-outline-item:last-child::before {
+  display: none;
+}
+
+/* Status indicator dot */
+.step-outline-item__indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1;
+}
+
+.step-outline-item__dot {
+  width: 10px;
+  height: 10px;
+  border-radius: var(--radius-full);
+  background: var(--surface-border);
+  border: 2px solid var(--surface-elevated);
+  transition: background-color var(--duration-fast) var(--ease-default),
+              transform var(--duration-fast) var(--ease-default);
+}
+
+/* Status variants */
+.step-outline-item--pending .step-outline-item__dot {
+  background: var(--status-pending-muted);
+  border-style: dashed;
+  border-color: var(--status-pending);
+}
+
+.step-outline-item--active .step-outline-item__dot {
+  background: var(--status-running);
+  border-color: var(--surface-elevated);
+  transform: scale(1.2);
+}
+
+.step-outline-item--active .step-outline-item__indicator::after {
+  content: "";
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  border-radius: var(--radius-full);
+  background: var(--status-running);
+  opacity: 0.3;
+  animation: pulse-ring 1.5s ease-out infinite;
+}
+
+@keyframes pulse-ring {
+  0% { transform: scale(1); opacity: 0.3; }
+  100% { transform: scale(1.8); opacity: 0; }
+}
+
+.step-outline-item--completed .step-outline-item__dot {
+  background: var(--status-success);
+  border-color: var(--surface-elevated);
+}
+
+.step-outline-item--error .step-outline-item__dot {
+  background: var(--status-error);
+  border-color: var(--surface-elevated);
+}
+
+/* Connecting line color by status */
+.step-outline-item--completed::before {
+  background: var(--status-success);
+}
+
+.step-outline-item--active::before {
+  background: linear-gradient(to bottom, var(--status-running) 50%, var(--surface-border) 50%);
+}
+
+/* Content */
+.step-outline-item__content {
+  flex: 1;
+  min-width: 0;
+}
+
+.step-outline-item__name {
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.step-outline-item--pending .step-outline-item__name {
+  color: var(--text-muted);
+  font-weight: var(--font-normal);
+}
+
+.step-outline-item--current .step-outline-item__name {
+  font-weight: var(--font-semibold);
+}
+
+.step-outline-item__meta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-top: 2px;
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+}
+
+.step-outline-item__duration,
+.step-outline-item__tokens {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+/* Step index badge */
+.step-outline-item__index {
+  font-size: var(--text-xs);
+  font-weight: var(--font-semibold);
+  color: var(--text-muted);
+  background: var(--surface-bg);
+  padding: 0 var(--space-1);
+  border-radius: var(--radius-sm);
+  flex-shrink: 0;
+}
+
+.step-outline-item--active .step-outline-item__index {
+  color: var(--status-running);
+  background: var(--status-running-muted);
+}
+
+.step-outline-item--completed .step-outline-item__index {
+  color: var(--status-success);
+}
+
+/* Expandable indicator for completed steps */
+.step-outline-item__expand {
+  width: 16px;
+  height: 16px;
+  color: var(--text-muted);
+  opacity: 0;
+  transition: opacity var(--duration-fast) var(--ease-default);
+}
+
+.step-outline-item:hover .step-outline-item__expand {
+  opacity: 1;
+}
+
+.step-outline-item__expand svg {
+  width: 100%;
+  height: 100%;
+}
+
+
+/* === ./components/organisms/StatusBar.css === */
+/* Status Bar */
+.status-bar {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  padding: 0 var(--space-3);
+  background: var(--surface-elevated);
+  border-top: 1px solid var(--surface-border);
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  gap: var(--space-4);
+}
+
+.status-bar__left {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.status-bar__center {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+}
+
+.status-bar__right {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+/* Status indicator */
+.status-bar__indicator {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.status-bar__dot {
+  width: 6px;
+  height: 6px;
+  border-radius: var(--radius-full);
+  background: var(--status-pending);
+}
+
+.status-bar__dot--running {
+  background: var(--status-running);
+  animation: status-pulse 1.5s ease-in-out infinite;
+}
+
+.status-bar__dot--paused {
+  background: var(--status-warning);
+}
+
+.status-bar__dot--completed {
+  background: var(--status-success);
+}
+
+.status-bar__dot--error {
+  background: var(--status-error);
+}
+
+@keyframes status-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+/* Status bar button */
+.status-bar__button {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: 0 var(--space-2);
+  height: 18px;
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+  font-size: var(--text-xs);
+  cursor: pointer;
+  transition: background-color var(--duration-fast) var(--ease-default),
+              color var(--duration-fast) var(--ease-default);
+}
+
+.status-bar__button:hover {
+  background: var(--interactive-hover);
+  color: var(--text-secondary);
+}
+
+.status-bar__button--primary {
+  color: var(--accent-primary);
+}
+
+.status-bar__button--primary:hover {
+  background: var(--accent-primary);
+  color: var(--text-inverse);
+}
+
+.status-bar__button--danger {
+  color: var(--status-error);
+}
+
+.status-bar__button--danger:hover {
+  background: var(--status-error);
+  color: var(--text-inverse);
+}
+
+.status-bar__button:focus-visible {
+  outline: 1px solid var(--interactive-focus);
+  outline-offset: 0;
+}
+
+.status-bar__button-icon {
+  width: 12px;
+  height: 12px;
+}
+
+.status-bar__button-icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* Step progress indicator */
+.status-bar__progress {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.status-bar__progress-text {
+  color: var(--text-secondary);
+}
+
+/* Keyboard hint */
+.status-bar__hint {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  color: var(--text-muted);
+}
+
+.status-bar__kbd {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 16px;
+  height: 14px;
+  padding: 0 3px;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  background: var(--interactive-bg);
+  border-radius: 2px;
+  color: var(--text-secondary);
+}
+
+/* Mobile: hide non-essential items */
+@media (max-width: 767px) {
+  .status-bar__center,
+  .status-bar__hint {
+    display: none;
+  }
+}
+
+
 
 /* -----------------------------------------------------------------------------
    Layout Components
@@ -3585,17 +4216,9 @@
 .pipeline-layout__main {
   flex: 1;
   overflow-y: auto;
-  scroll-behavior: smooth;
   padding: var(--space-4);
   display: flex;
   flex-direction: column;
-}
-
-.pipeline-layout__footer {
-  flex-shrink: 0;
-  border-top: 1px solid var(--surface-border);
-  background: var(--surface-elevated);
-  padding: var(--space-3) var(--space-4);
 }
 
 /* Step divider between steps */
@@ -3614,29 +4237,6 @@
   font-style: italic;
 }
 
-/* Upcoming step preview in footer */
-.upcoming-step {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  padding-bottom: var(--space-3);
-  margin-bottom: var(--space-3);
-  border-bottom: 1px solid var(--surface-border-subtle);
-}
-
-.upcoming-step__label {
-  font-size: var(--text-xs);
-  color: var(--text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
-.upcoming-step__name {
-  font-size: var(--text-sm);
-  font-weight: var(--font-medium);
-  color: var(--text-secondary);
-}
-
 /* Tablet breakpoint */
 @media (max-width: 1023px) {
   .pipeline-layout__main {
@@ -3648,10 +4248,6 @@
 @media (max-width: 767px) {
   .pipeline-layout__main {
     padding: var(--space-2);
-  }
-
-  .pipeline-layout__footer {
-    padding: var(--space-2) var(--space-3);
   }
 }
 
@@ -3756,38 +4352,133 @@
 }
 
 
+/* === ./components/layouts/IDEShell.css === */
+/* =============================================================================
+   IDE Shell Layout
+   Grid-based container with activity bar, sidebar, main content, and status bar
+   ============================================================================= */
 
-/* -----------------------------------------------------------------------------
-   Routes
-   ----------------------------------------------------------------------------- */
-/* === ./routes/WorkspaceRoute.css === */
-/* WorkspaceRoute - Single column layout */
+:root {
+  --shell-activity-bar-width: 48px;
+  --shell-sidebar-width: 280px;
+  --shell-sidebar-collapsed-width: 0px;
+  --shell-status-bar-height: 24px;
+}
 
-.workspace-layout {
-  display: flex;
-  flex-direction: column;
+.ide-shell {
+  display: grid;
+  grid-template-areas:
+    "activity sidebar main"
+    "status   status  status";
+  grid-template-columns: var(--shell-activity-bar-width) var(--shell-sidebar-width) 1fr;
+  grid-template-rows: 1fr var(--shell-status-bar-height);
   height: 100vh;
   background: var(--surface-bg);
 }
 
-.workspace-layout__header {
+.ide-shell--sidebar-collapsed {
+  grid-template-columns: var(--shell-activity-bar-width) var(--shell-sidebar-collapsed-width) 1fr;
+}
+
+/* Activity Bar */
+.ide-shell__activity-bar {
+  grid-area: activity;
+  display: flex;
+  flex-direction: column;
+  background: var(--surface-elevated);
+  border-right: 1px solid var(--surface-border);
+  padding: var(--space-2) 0;
+}
+
+.ide-shell__activity-bar-top {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: 0 var(--space-1);
+}
+
+.ide-shell__activity-bar-bottom {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: 0 var(--space-1);
+}
+
+/* Sidebar */
+.ide-shell__sidebar {
+  grid-area: sidebar;
+  display: flex;
+  flex-direction: column;
+  background: var(--surface-elevated);
+  border-right: 1px solid var(--surface-border);
+  overflow: hidden;
+  transition: width var(--duration-normal) var(--ease-default);
+}
+
+.ide-shell--sidebar-collapsed .ide-shell__sidebar {
+  width: 0;
+  border-right: none;
+}
+
+.ide-shell__sidebar-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-3);
+  border-bottom: 1px solid var(--surface-border-subtle);
+  flex-shrink: 0;
+}
+
+.ide-shell__sidebar-title {
+  font-size: var(--text-xs);
+  font-weight: var(--font-semibold);
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0;
+}
+
+.ide-shell__sidebar-content {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* Main Content */
+.ide-shell__main {
+  grid-area: main;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--surface-bg);
+}
+
+.ide-shell__main-header {
   display: flex;
   align-items: center;
   gap: var(--space-3);
-  padding: var(--space-3) var(--space-4);
+  padding: var(--space-2) var(--space-4);
   background: var(--surface-elevated);
   border-bottom: 1px solid var(--surface-border);
   flex-shrink: 0;
 }
 
-.workspace-layout__title {
-  font-size: var(--text-base);
+.ide-shell__main-title {
+  font-size: var(--text-sm);
   font-weight: var(--font-semibold);
   color: var(--text-primary);
   margin: 0;
 }
 
-.workspace-layout__branch {
+.ide-shell__main-meta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-left: auto;
+}
+
+.ide-shell__main-branch {
   font-size: var(--text-xs);
   font-family: var(--font-mono);
   color: var(--text-muted);
@@ -3796,31 +4487,62 @@
   border-radius: var(--radius-sm);
 }
 
-.workspace-layout__path {
+.ide-shell__main-path {
   font-size: var(--text-xs);
   font-family: var(--font-mono);
   color: var(--text-muted);
-  margin-left: auto;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  max-width: 300px;
 }
 
-.workspace-layout__content {
+.ide-shell__main-content {
   flex: 1;
-  min-height: 0;
   overflow: hidden;
 }
 
-.workspace-layout__content > .pipeline-layout {
-  height: 100%;
+/* Status Bar */
+.ide-shell__status-bar {
+  grid-area: status;
 }
 
-/* Mobile breakpoint */
-@media (max-width: 767px) {
-  .workspace-layout__header {
-    padding: var(--space-2) var(--space-3);
+/* Tablet breakpoint - collapse sidebar by default */
+@media (max-width: 1023px) {
+  :root {
+    --shell-sidebar-width: 240px;
   }
+}
+
+/* Mobile breakpoint - hide activity bar, full-width main */
+@media (max-width: 767px) {
+  .ide-shell {
+    grid-template-areas:
+      "main"
+      "status";
+    grid-template-columns: 1fr;
+  }
+
+  .ide-shell__activity-bar,
+  .ide-shell__sidebar {
+    display: none;
+  }
+}
+
+
+
+/* -----------------------------------------------------------------------------
+   Routes
+   ----------------------------------------------------------------------------- */
+/* === ./routes/WorkspaceRoute.css === */
+/* WorkspaceRoute - Now uses IDEShell, minimal overrides needed */
+
+/* The old workspace-layout styles are replaced by ide-shell */
+/* Keeping this file for any route-specific overrides */
+
+/* Mobile breakpoint overrides if needed */
+@media (max-width: 767px) {
+  /* Mobile-specific styles for workspace route */
 }
 
 

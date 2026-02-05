@@ -9,3 +9,6 @@ export { useProjectSettings } from "./useProjectSettings.ts";
 export type { ProjectSettings } from "./useProjectSettings.ts";
 export { useSessionHistory } from "./useSessionHistory.ts";
 export type { HistoryEntry } from "./useSessionHistory.ts";
+
+export { useScrollSync } from "./useScrollSync.ts";
+export type { UseScrollSyncReturn } from "./useScrollSync.ts";

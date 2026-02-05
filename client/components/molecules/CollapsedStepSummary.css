@@ -1,0 +1,95 @@
+/* Collapsed Step Summary - Single-line completed step */
+.collapsed-step-summary {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-4);
+  background: transparent;
+  border-left: 3px solid var(--status-success);
+  cursor: pointer;
+  transition: background-color var(--duration-fast) var(--ease-default);
+}
+
+.collapsed-step-summary:hover {
+  background: var(--surface-elevated);
+}
+
+.collapsed-step-summary__index {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  font-size: 10px;
+  font-weight: var(--font-semibold);
+  color: var(--text-inverse);
+  background: var(--status-success);
+  border-radius: var(--radius-full);
+  flex-shrink: 0;
+}
+
+.collapsed-step-summary__name {
+  flex: 1;
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+  color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.collapsed-step-summary__meta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.collapsed-step-summary__checkmark {
+  width: 14px;
+  height: 14px;
+  color: var(--status-success);
+  flex-shrink: 0;
+}
+
+.collapsed-step-summary__checkmark svg {
+  width: 100%;
+  height: 100%;
+}
+
+.collapsed-step-summary__expand {
+  width: 16px;
+  height: 16px;
+  color: var(--text-muted);
+  flex-shrink: 0;
+  opacity: 0;
+  transition: opacity var(--duration-fast) var(--ease-default),
+              transform var(--duration-fast) var(--ease-default);
+}
+
+.collapsed-step-summary:hover .collapsed-step-summary__expand {
+  opacity: 1;
+}
+
+.collapsed-step-summary__expand svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* Animation when collapsing */
+.collapsed-step-summary--entering {
+  animation: summary-enter 200ms ease-out forwards;
+}
+
+@keyframes summary-enter {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
